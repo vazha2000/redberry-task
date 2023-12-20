@@ -28,22 +28,7 @@
       gap: 8px;
       margin: 24px 0;
 
-      h2 {
-        color: $text-primary-color;
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 32px;
-      }
-      label {
-        color: $text-primary-color;
-        font-family: FiraGO;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 20px;
-      }
-      input {
+      .email-input {
         height: 44px;
         border-radius: 12px;
         border: 1.5px solid #5d37f3;
@@ -56,11 +41,49 @@
         line-height: 20px;
         outline: none;
 
-        &::placeholder {
-          color: #85858d;
+        &.error {
+          border: 1px solid $text-danger;
+          background: #faf2f3;
+
+          &:focus {
+            border: 2px solid $text-danger;
+          }
         }
+
         &:focus {
           border: 2px solid #5d37f3;
+        }
+
+        &__error {
+          display: flex;
+          gap: 8px;
+          span {
+            color: $text-danger;
+            font-family: FiraGO;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+          }
+        }
+        h2 {
+          color: $text-primary-color;
+          font-size: 24px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 32px;
+        }
+        label {
+          color: $text-primary-color;
+          font-family: FiraGO;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 20px;
+        }
+
+        &::placeholder {
+          color: #85858d;
         }
       }
     }
@@ -70,7 +93,7 @@
       width: 100%;
     }
   }
-  
+
   .close-button {
     position: absolute;
     top: 20px;
