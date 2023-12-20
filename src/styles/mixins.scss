@@ -4,3 +4,19 @@
   align-items: center;
   flex-direction: $direction;
 }
+
+@mixin buttonStyle() {
+  border: none;
+  display: inline-flex;
+  padding: 10px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background-color: #5d37f3;
+  color: #fff;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
