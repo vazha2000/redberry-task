@@ -1,0 +1,80 @@
+@import "../../../styles/mixins.scss";
+@import "../../../styles/variables";
+
+.login-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  width: 480px;
+  min-height: 272px;
+  z-index: 6;
+
+  .login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    form {
+      width: 100%;
+    }
+
+    &__email-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 24px 0;
+
+      h2 {
+        color: $text-primary-color;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px;
+      }
+      label {
+        color: $text-primary-color;
+        font-family: FiraGO;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+      }
+      input {
+        height: 44px;
+        border-radius: 12px;
+        border: 1.5px solid #5d37f3;
+        padding: 12px 0 12px 16px;
+        background: #f7f7ff;
+        color: $text-primary-color;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+        outline: none;
+
+        &::placeholder {
+          color: #85858d;
+        }
+        &:focus {
+          border: 2px solid #5d37f3;
+        }
+      }
+    }
+
+    button {
+      @include buttonStyle;
+      width: 100%;
+    }
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+}

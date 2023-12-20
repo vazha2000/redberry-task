@@ -1,8 +1,11 @@
 import React from 'react'
 import "./Main.scss"
+import { Navbar } from '../../components/Navbar'
 
 export const Main = () => {
   return (
-    <div>Main</div>
+    <div className='main-wrapper'>
+      <Navbar />
+    </div>
   )
 }
