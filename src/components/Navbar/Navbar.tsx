@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Navbar.scss";
 import { Login } from "../Modals/Login";
+import { Overlay } from "../Overlay";
 
 export const Navbar = () => {
   const [isLoginClicked, setIsLoginClicked] = useState(false);
@@ -16,10 +17,13 @@ export const Navbar = () => {
         </div>
       </nav>
       {isLoginClicked && (
-        <Login
-          isLoginClicked={isLoginClicked}
-          setIsLoginClicked={setIsLoginClicked}
-        />
+        <>
+          <Overlay setIsLoginClicked={setIsLoginClicked}/>
+          <Login
+            isLoginClicked={isLoginClicked}
+            setIsLoginClicked={setIsLoginClicked}
+          />
+        </>
       )}
     </div>
   );
