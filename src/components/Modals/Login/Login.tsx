@@ -9,11 +9,12 @@ export const Login = () => {
         <form>
           <div className="login__email-container">
             <label>ელ-ფოსტა</label>
-            <input type="text" placeholder="Example@redberry.ge"/>
+            <input type="text" placeholder="Example@redberry.ge" />
           </div>
           <button>შესვლა</button>
         </form>
       </div>
+      <img src="assets/svg/close.svg" alt="close" className="close-button" />
     </div>
   );
 };
