@@ -18,6 +18,8 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
     reset,
   } = useForm<TFormData>();
 
+  const token = "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
+
   const validateEmail = (value: string) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@redberry\.ge$/;
 
@@ -25,11 +27,33 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
       emailPattern.test(value) || "მეილი უნდა მთავრდებოდეს @redberry.ge-ით"
     );
   };
+
+  const onSubmit = async (data: TFormData) => {
+    try {
+      console.log(data)
+      const response = await fetch("https://api.blog.redberryinternship.ge/api/login", {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({email: data.Email}),
+      });
+      if(response.status === 204) {
+        console.log("user exists!!!")
+      } else {
+        console.log("does not exist")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
   return (
     <div className="login-wrapper">
       <div className="login">
         <h2>შესვლა</h2>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="login__email-container">
             <label>ელ-ფოსტა</label>
             <input
