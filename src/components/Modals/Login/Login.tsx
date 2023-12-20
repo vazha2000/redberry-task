@@ -1,7 +1,11 @@
 import React from "react";
 import "./Login.scss";
 
-export const Login = () => {
+type TLoginProps = {
+  isLoginClicked: boolean;
+  setIsLoginClicked: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export const Login = ({ setIsLoginClicked }: TLoginProps) => {
   return (
     <div className="login-wrapper">
       <div className="login">
@@ -14,7 +18,7 @@ export const Login = () => {
           <button>შესვლა</button>
         </form>
       </div>
-      <img src="assets/svg/close.svg" alt="close" className="close-button" />
+      <img src="assets/svg/close.svg" alt="close" className="close-button" onClick={() => setIsLoginClicked(false)}/>
     </div>
   );
 };

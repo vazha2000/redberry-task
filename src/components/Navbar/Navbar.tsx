@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.scss";
+import { Login } from "../Modals/Login";
 
 export const Navbar = () => {
+  const [isLoginClicked, setIsLoginClicked] = useState(false);
+
   return (
     <div className="navbar-wrapper">
       <nav className="navbar">
@@ -9,9 +12,15 @@ export const Navbar = () => {
           <img src="assets/images/logo.png" alt="logo" />
         </div>
         <div className="navbar__buttons">
-          <button>შესვლა</button>
+          <button onClick={() => setIsLoginClicked(true)}>შესვლა</button>
         </div>
       </nav>
+      {isLoginClicked && (
+        <Login
+          isLoginClicked={isLoginClicked}
+          setIsLoginClicked={setIsLoginClicked}
+        />
+      )}
     </div>
   );
 };
