@@ -1,0 +1,29 @@
+@import "../Login/Login.scss";
+
+.successAuth-wrapper {
+  @extend .login-wrapper;
+  // min-height: 300px;
+  min-height: auto;
+  padding: 64px 24px 40px;
+
+  .successAuth {
+    @extend .login;
+
+    .success-icon {
+      margin-bottom: 16px;
+    }
+  }
+
+  h3 {
+    color: $text-primary-color;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px;
+    margin-bottom: 48px
+  }
+
+  .close-button {
+    @extend .close-button;
+  }
+}
