@@ -3,6 +3,7 @@ import "./Main.scss"
 import { Navbar } from '../../components/Navbar'
 import { Hero } from '../../components/Hero'
 import { HeroCategories } from '../../components/HeroCategories'
+import { HeroBlogs } from '../../components/HeroBlogs'
 
 export const Main = () => {
   return (
@@ -10,6 +11,7 @@ export const Main = () => {
       <Navbar />
       <Hero />
       <HeroCategories />
+      <HeroBlogs />
     </div>
   )
 }
