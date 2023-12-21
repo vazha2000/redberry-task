@@ -1,6 +1,7 @@
 import React from "react";
 import "./Login.scss";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../../../context/AuthContext";
 
 type TLoginProps = {
   isLoginClicked: boolean;
@@ -18,7 +19,9 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
     reset,
   } = useForm<TFormData>();
 
-  const token = "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
+  const { setLoggedIn } = useAuth();
+  const token =
+    "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
 
   const validateEmail = (value: string) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@redberry\.ge$/;
@@ -30,25 +33,28 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
 
   const onSubmit = async (data: TFormData) => {
     try {
-      console.log(data)
-      const response = await fetch("https://api.blog.redberryinternship.ge/api/login", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({email: data.Email}),
-      });
-      if(response.status === 204) {
-        console.log("user exists!!!")
+      const response = await fetch(
+        "https://api.blog.redberryinternship.ge/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: data.Email }),
+        }
+      );
+      if (response.status === 204) {
+        console.log("user exists!!!");
+        setLoggedIn(true);
       } else {
-        console.log("does not exist")
+        console.log("does not exist");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  
+  };
+
   return (
     <div className="login-wrapper">
       <div className="login">
