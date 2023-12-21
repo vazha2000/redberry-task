@@ -6,7 +6,9 @@ export const BlogCard = () => {
     <div className="blogCard-wrapper">
       <div className="blogCard">
         <div className="blogCard__image">
-          <div className="image"></div>
+          <div className="image">
+            <img src="assets/images/test-cover.jpeg" alt="test" />
+          </div>
         </div>
         <div className="blogCard__content">
           <h4>ნია გოგსაძე</h4>
