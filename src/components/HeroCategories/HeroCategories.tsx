@@ -40,7 +40,7 @@ export const HeroCategories = () => {
     <div className="heroCategories-wrapper">
       <div className="heroCategories">
         {categoriesData.data.map((item) => (
-          <button className="heroCategories__button" style={{color: item.text_color, backgroundColor: item.background_color}}>
+          <button key={item.id} className="heroCategories__button" style={{color: item.text_color, backgroundColor: item.background_color}}>
             {item.title}
           </button>
         ))}
