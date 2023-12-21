@@ -1,24 +1,101 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.scss";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../../context/AuthContext";
 
 type TLoginProps = {
   isLoginClicked: boolean;
   setIsLoginClicked: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+type TFormData = {
+  Email: string;
+};
+const displayError = () => {
+  return (
+    <div className="email-input__error">
+      <img src="assets/svg/error-circle.svg" alt="error-circle" />
+      <span>ელ-ფოსტა არ მოიძებნა</span>
+    </div>
+  );
+};
 export const Login = ({ setIsLoginClicked }: TLoginProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TFormData>();
+
+  const { setLoggedIn } = useAuth();
+  const [emailExistsError, setEmailExistsError] = useState(false);
+  const token =
+    "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
+
+  const validateEmail = (value: string) => {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@redberry\.ge$/;
+
+    return (
+      emailPattern.test(value) || "მეილი უნდა მთავრდებოდეს @redberry.ge-ით"
+    );
+  };
+
+  const onSubmit = async (data: TFormData) => {
+    try {
+      const response = await fetch(
+        "https://api.blog.redberryinternship.ge/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: data.Email }),
+        }
+      );
+      if (response.status === 204) {
+        setLoggedIn(true);
+      } else {
+        setEmailExistsError(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="login-wrapper">
       <div className="login">
         <h2>შესვლა</h2>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="login__email-container">
             <label>ელ-ფოსტა</label>
-            <input type="text" placeholder="Example@redberry.ge" />
+            <input
+              className={`email-input ${errors.Email ? "error" : ""}`}
+              {...register("Email", {
+                required: true,
+                validate: validateEmail,
+              })}
+              type="text"
+              placeholder="Example@redberry.ge"
+            />
+            {errors.Email && errors.Email.type !== "required" && (
+              <div className="email-input__error">
+                <img src="assets/svg/error-circle.svg" alt="error-circle" />
+                <span>{errors.Email.message}</span>
+              </div>
+            )}
+            {emailExistsError && displayError()}
           </div>
-          <button>შესვლა</button>
+          <button type="submit">შესვლა</button>
         </form>
       </div>
-      <img src="assets/svg/close.svg" alt="close" className="close-button" onClick={() => setIsLoginClicked(false)}/>
+      <img
+        src="assets/svg/close.svg"
+        alt="close"
+        className="close-button"
+        onClick={() => setIsLoginClicked(false)}
+      />
     </div>
   );
 };
