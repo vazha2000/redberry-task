@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import "./Navbar.scss";
 import { Login } from "../Modals/Login";
 import { Overlay } from "../Overlay";
+import { SuccessAuth } from "../Modals/SuccessAuth";
+import { useAuth } from "../../context/AuthContext";
 
 export const Navbar = () => {
   const [isLoginClicked, setIsLoginClicked] = useState(false);
+
+  const { isLoggedIn } = useAuth();
 
   return (
     <div className="navbar-wrapper">
@@ -13,16 +17,26 @@ export const Navbar = () => {
           <img src="assets/images/logo.png" alt="logo" />
         </div>
         <div className="navbar__buttons">
-          <button onClick={() => setIsLoginClicked(true)}>შესვლა</button>
+          {/* {!isLoggedIn && (
+          )} */}
+          {isLoggedIn ? (
+            <button>დაამატე ბლოგი</button>
+          ) : (
+            <button onClick={() => setIsLoginClicked(true)}>შესვლა</button>
+          )}
         </div>
       </nav>
       {isLoginClicked && (
         <>
-          <Overlay setIsLoginClicked={setIsLoginClicked}/>
-          <Login
-            isLoginClicked={isLoginClicked}
-            setIsLoginClicked={setIsLoginClicked}
-          />
+          <Overlay setIsLoginClicked={setIsLoginClicked} />
+          {!isLoggedIn && (
+            <Login
+              isLoginClicked={isLoginClicked}
+              setIsLoginClicked={setIsLoginClicked}
+            />
+          )}
+
+          {isLoggedIn && <SuccessAuth setIsLoginClicked={setIsLoginClicked} />}
         </>
       )}
     </div>

@@ -13,7 +13,7 @@ export const SuccessAuth = ({ setIsLoginClicked }: TSuccessAuthProps) => {
           <img src="assets/svg/success.svg" alt="success" />
         </div>
         <h3>წარმატებული ავტორიზაცია</h3>
-        <button>კარგი</button>
+        <button onClick={() => setIsLoginClicked(false)}>კარგი</button>
       </div>
       <img
         src="assets/svg/close.svg"

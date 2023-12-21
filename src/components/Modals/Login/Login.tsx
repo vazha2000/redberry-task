@@ -54,10 +54,8 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
         }
       );
       if (response.status === 204) {
-        console.log("user exists!!!");
         setLoggedIn(true);
       } else {
-        console.log("does not exist");
         setEmailExistsError(true);
       }
     } catch (error) {
