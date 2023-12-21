@@ -35,7 +35,6 @@ export const HeroCategories = () => {
     initialCategoriesData
   );
 
-  console.log(categoriesData.data.map((item) => item));
 
   return (
     <div className="heroCategories-wrapper">
