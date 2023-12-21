@@ -1,3 +1,23 @@
 .heroCategories-wrapper {
   padding: 0 76px;
+  display: flex;
+  justify-content: center;
+
+  .heroCategories {
+    display: flex;
+    overflow-x: scroll;
+    max-width: 684px;
+    gap: 24px;
+
+    &__button {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+  }
 }
