@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.scss";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
@@ -11,6 +11,14 @@ type TLoginProps = {
 type TFormData = {
   Email: string;
 };
+const displayError = () => {
+  return (
+    <div className="email-input__error">
+      <img src="assets/svg/error-circle.svg" alt="error-circle" />
+      <span>ელ-ფოსტა არ მოიძებნა</span>
+    </div>
+  );
+};
 export const Login = ({ setIsLoginClicked }: TLoginProps) => {
   const {
     register,
@@ -20,6 +28,7 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
   } = useForm<TFormData>();
 
   const { setLoggedIn } = useAuth();
+  const [emailExistsError, setEmailExistsError] = useState(false);
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
 
@@ -49,6 +58,7 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
         setLoggedIn(true);
       } else {
         console.log("does not exist");
+        setEmailExistsError(true);
       }
     } catch (error) {
       console.log(error);
@@ -77,6 +87,7 @@ export const Login = ({ setIsLoginClicked }: TLoginProps) => {
                 <span>{errors.Email.message}</span>
               </div>
             )}
+            {emailExistsError && displayError()}
           </div>
           <button type="submit">შესვლა</button>
         </form>
