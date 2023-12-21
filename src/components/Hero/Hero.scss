@@ -1,0 +1,21 @@
+.hero-wrapper {
+  padding: 0 76px;
+  margin-top: 64px;
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h1 {
+      color: #1a1a1f;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 72px;
+    }
+
+    img {
+      width: 624px;
+      height: 200px;
+    }
+  }
+}
