@@ -62,6 +62,8 @@ export const AddBlog = () => {
     initialCategoriesData
   );
 
+  const [pickedCategories, setPickedCategories] = useState<string[]>([]);
+
   const handleCategoryClick = (categoryTitle: string) => {
     const currentCategories = watch("categories");
     const isCategorySelected = currentCategories.includes(categoryTitle);
@@ -71,12 +73,22 @@ export const AddBlog = () => {
         "categories",
         currentCategories.filter((category) => category !== categoryTitle)
       );
+      setPickedCategories(
+        pickedCategories.filter((category) => category !== categoryTitle)
+      );
     } else {
       setValue("categories", [...currentCategories, categoryTitle]);
+      setPickedCategories([...pickedCategories, categoryTitle]);
     }
   };
 
-  console.log(watch());
+  const getColorStyles = (categoryTitle: string) => {
+    const category = categoriesData.data.find((cat) => cat.title === categoryTitle);
+    return {
+      color: category?.text_color,
+      background: category?.background_color,
+    };
+  };
   return (
     <div className="addBlog-wrapper">
       <div className="addBlog">
@@ -169,6 +181,20 @@ export const AddBlog = () => {
             >
               <label>კატეგორია</label>
               <div className="category-list-container">
+                <ul className="picked-category-list">
+                  {pickedCategories.map((picked, index) => (
+                    <li
+                      key={index}
+                      className="picked-category-list__item"
+                      style={getColorStyles(picked)}
+                    >
+                      {picked}
+                    </li>
+                  ))}
+                </ul>
+                <div className="arrow-down" style={{display: "flex"}}>
+                  <img src="assets/svg/arrow-down.svg" alt="arrow down" />
+                </div>
                 {isCategoriesClicked && (
                   <ul className="category-list">
                     {categoriesData.data.map((item) => (
