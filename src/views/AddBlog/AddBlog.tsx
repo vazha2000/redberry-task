@@ -183,13 +183,18 @@ export const AddBlog = () => {
                 <ul className="picked-category-list">
                   {pickedCategories.map((picked, index) => (
                     <div key={index} style={getColorStyles(picked)}>
-                      <li
-                        key={index}
-                        className="picked-category-list__item"
-                      >
+                      <li key={index} className="picked-category-list__item">
                         {picked}
                       </li>
-                      <img src="assets/svg/close2.svg" alt="close icon" />
+                      <img
+                        onClick={() =>
+                          setPickedCategories(
+                            pickedCategories.filter((item) => item !== picked)
+                          )
+                        }
+                        src="assets/svg/close2.svg"
+                        alt="close icon"
+                      />
                     </div>
                   ))}
                 </ul>
