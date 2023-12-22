@@ -4,11 +4,36 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { TCategory } from "../../components/HeroCategories/HeroCategories";
 import { useFetch } from "../../utils/useFetch";
+import { useForm, Controller } from "react-hook-form";
 
+export type TBlogForm = {
+  author: string;
+  title: string;
+  description: string;
+  publishDate: Date;
+  categories: string[];
+  email: string;
+};
 export const AddBlog = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [isCategoriesClicked, setIsCategoriesClicked] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    control,
+    setValue,
+  } = useForm<TBlogForm>({
+    defaultValues: {
+      author: "",
+      title: "",
+      description: "",
+      publishDate: new Date(),
+      categories: [],
+      email: "",
+    },
+  });
 
   const handleTextClick = () => {
     if (fileInputRef.current) {
@@ -37,6 +62,21 @@ export const AddBlog = () => {
     initialCategoriesData
   );
 
+  const handleCategoryClick = (categoryTitle: string) => {
+    const currentCategories = watch("categories");
+    const isCategorySelected = currentCategories.includes(categoryTitle);
+
+    if (isCategorySelected) {
+      setValue(
+        "categories",
+        currentCategories.filter((category) => category !== categoryTitle)
+      );
+    } else {
+      setValue("categories", [...currentCategories, categoryTitle]);
+    }
+  };
+
+  console.log(watch());
   return (
     <div className="addBlog-wrapper">
       <div className="addBlog">
@@ -70,7 +110,11 @@ export const AddBlog = () => {
           <div className="titleAuthor-container">
             <div className="author">
               <label>ავტორი *</label>
-              <input type="text" placeholder="შეიყვანეთ ავტორი" />
+              <input
+                {...register("author")}
+                type="text"
+                placeholder="შეიყვანეთ ავტორი"
+              />
               <ul className="author__list">
                 <li>მინიმუმ 4 სიმბოლო</li>
                 <li>მინიმუმ ორი სიტყვა</li>
@@ -79,7 +123,11 @@ export const AddBlog = () => {
             </div>
             <div className="title">
               <label>სათაური *</label>
-              <input type="text" placeholder="შეიყვანეთ სათაური" />
+              <input
+                {...register("title")}
+                type="text"
+                placeholder="შეიყვანეთ სათაური"
+              />
               <ul>
                 <li>მინიმუმ ორი სიმბოლო</li>
               </ul>
@@ -88,6 +136,7 @@ export const AddBlog = () => {
           <div className="description-container">
             <label>აღწერა *</label>
             <textarea
+              {...register("description")}
               placeholder="შეიყვანეთ აღწერა"
               className="description-content"
             ></textarea>
@@ -100,9 +149,17 @@ export const AddBlog = () => {
                 <div className="calendar__icon">
                   <img src="assets/svg/calendar.svg" alt="calendar" />
                 </div>
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date: Date) => setSelectedDate(date)}
+                <Controller
+                  name="publishDate"
+                  control={control}
+                  defaultValue={new Date()}
+                  render={({ field }) => (
+                    <DatePicker
+                      dateFormat="dd-MM-yyyy"
+                      selected={field.value}
+                      onChange={(date: Date) => field.onChange(date)}
+                    />
+                  )}
                 />
               </div>
             </div>
@@ -116,6 +173,7 @@ export const AddBlog = () => {
                   <ul className="category-list">
                     {categoriesData.data.map((item) => (
                       <li
+                        onClick={() => handleCategoryClick(item.title)}
                         key={item.id}
                         className="category-list__item"
                         style={{
@@ -133,7 +191,7 @@ export const AddBlog = () => {
           </div>
           <div className="email-container">
             <label>ელ-ფოსტა *</label>
-            <input type="text" />
+            <input {...register("email")} type="text" />
           </div>
           <div className="submit-button">
             <button>გამოქვეყნება</button>
