@@ -4,20 +4,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export const AddBlog = () => {
-  const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
   const handleTextClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   return (
     <div className="addBlog-wrapper">
