@@ -83,7 +83,9 @@ export const AddBlog = () => {
   };
 
   const getColorStyles = (categoryTitle: string) => {
-    const category = categoriesData.data.find((cat) => cat.title === categoryTitle);
+    const category = categoriesData.data.find(
+      (cat) => cat.title === categoryTitle
+    );
     return {
       color: category?.text_color,
       background: category?.background_color,
@@ -175,25 +177,31 @@ export const AddBlog = () => {
                 />
               </div>
             </div>
-            <div
-              className="category-container"
-              onClick={() => setIsCategoriesClicked(!isCategoriesClicked)}
-            >
+            <div className="category-container">
               <label>კატეგორია</label>
               <div className="category-list-container">
                 <ul className="picked-category-list">
                   {pickedCategories.map((picked, index) => (
-                    <li
-                      key={index}
-                      className="picked-category-list__item"
-                      style={getColorStyles(picked)}
-                    >
-                      {picked}
-                    </li>
+                    <div key={index} style={getColorStyles(picked)}>
+                      <li
+                        key={index}
+                        className="picked-category-list__item"
+                      >
+                        {picked}
+                      </li>
+                      <img src="assets/svg/close2.svg" alt="close icon" />
+                    </div>
                   ))}
                 </ul>
-                <div className="arrow-down" style={{display: "flex"}}>
-                  <img src="assets/svg/arrow-down.svg" alt="arrow down" />
+                <div
+                  className="arrow-down"
+                  style={{ display: "flex", cursor: "pointer" }}
+                >
+                  <img
+                    onClick={() => setIsCategoriesClicked(!isCategoriesClicked)}
+                    src="assets/svg/arrow-down.svg"
+                    alt="arrow down"
+                  />
                 </div>
                 {isCategoriesClicked && (
                   <ul className="category-list">
