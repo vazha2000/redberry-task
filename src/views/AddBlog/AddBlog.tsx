@@ -180,6 +180,7 @@ export const AddBlog = () => {
             <div className="category-container">
               <label>კატეგორია</label>
               <div className="category-list-container">
+                {pickedCategories.length === 0 && <span>აირჩიეთ კატეგორია</span>}
                 <ul className="picked-category-list">
                   {pickedCategories.map((picked, index) => (
                     <div key={index} style={getColorStyles(picked)}>

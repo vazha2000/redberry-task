@@ -203,6 +203,15 @@
             border: 1px solid #e4e3eb;
             background: #fcfcfd;
             max-width: 285px;
+
+            span {
+              white-space: nowrap;
+              color: #85858d;
+              font-size: 14px;
+              font-weight: 400;
+              margin-left: 10px;
+              cursor: default;
+            }
             .picked-category-list {
               width: 100%;
               display: flex;
