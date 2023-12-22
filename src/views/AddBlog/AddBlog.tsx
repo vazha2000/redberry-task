@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
 import "./AddBlog.scss";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const AddBlog = () => {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const calendarRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -16,12 +17,8 @@ export const AddBlog = () => {
       fileInputRef.current.click();
     }
   };
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
-  const handleCalendarClick = () => {
-    if (calendarRef.current) {
-      calendarRef.current.click();
-    }
-  };
   return (
     <div className="addBlog-wrapper">
       <div className="addBlog">
@@ -30,7 +27,7 @@ export const AddBlog = () => {
           <div className="upload-container">
             <label>ატვირთეთ ფოტო</label>
             <div className="upload">
-              <div style={{display: "flex"}}>
+              <div style={{ display: "flex" }}>
                 <img src="assets/svg/folder-add.svg" alt="add file" />
               </div>
               <div>
@@ -81,17 +78,13 @@ export const AddBlog = () => {
           <div className="calendarCategory">
             <div className="calendar-container">
               <label>გამოქვეყნების თარიღი *</label>
-              <div className="calendar" onClick={handleCalendarClick}>
+              <div className="calendar">
                 <div className="calendar__icon">
                   <img src="assets/svg/calendar.svg" alt="calendar" />
                 </div>
-                <span>12/22/2023</span>
-                <input
-                  ref={calendarRef}
-                  type="date"
-                  id="calendar"
-                  name="calendar"
-                  style={{ display: "none" }}
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date: Date) => setSelectedDate(date)}
                 />
               </div>
             </div>
