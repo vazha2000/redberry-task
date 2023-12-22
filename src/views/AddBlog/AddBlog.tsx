@@ -2,16 +2,40 @@ import React, { useRef, useState } from "react";
 import "./AddBlog.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { TCategory } from "../../components/HeroCategories/HeroCategories";
+import { useFetch } from "../../utils/useFetch";
 
 export const AddBlog = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [isCategoriesClicked, setIsCategoriesClicked] = useState(false);
 
   const handleTextClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
+
+  const token =
+    "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
+  const url = "https://api.blog.redberryinternship.ge/api/categories";
+
+  const initialCategoriesData: TCategory = {
+    data: [
+      {
+        id: 0,
+        title: "",
+        text_color: "",
+        background_color: "",
+      },
+    ],
+  };
+
+  const [categoriesData, loading] = useFetch<TCategory>(
+    url,
+    token,
+    initialCategoriesData
+  );
 
   return (
     <div className="addBlog-wrapper">
@@ -82,16 +106,37 @@ export const AddBlog = () => {
                 />
               </div>
             </div>
-            <div className="category-container">
+            <div
+              className="category-container"
+              onClick={() => setIsCategoriesClicked(!isCategoriesClicked)}
+            >
               <label>კატეგორია</label>
               <div className="category-list-container">
-                <ul className="category-list"></ul>
+                {isCategoriesClicked && (
+                  <ul className="category-list">
+                    {categoriesData.data.map((item) => (
+                      <li
+                        key={item.id}
+                        className="category-list__item"
+                        style={{
+                          color: item.text_color,
+                          background: item.background_color,
+                        }}
+                      >
+                        {item.title}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
           <div className="email-container">
             <label>ელ-ფოსტა *</label>
             <input type="text" />
+          </div>
+          <div className="submit-button">
+            <button>გამოქვეყნება</button>
           </div>
         </form>
       </div>
