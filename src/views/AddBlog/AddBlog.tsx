@@ -14,7 +14,7 @@ export type TBlogForm = {
   publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
-  image: string;
+  image: File;
 };
 export const AddBlog = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -34,7 +34,7 @@ export const AddBlog = () => {
       publish_date: new Date(),
       categories: [],
       email: "",
-      image: "",
+      // image: "",
     },
   });
 
@@ -132,12 +132,14 @@ export const AddBlog = () => {
       categories: categoryIdsAsString,
     };
     const formData = new FormData();
-    formData.append("title", "სდსკდოს");
-    formData.append("author", "დსჯიჯდს სდჯსდს");
-    formData.append("publish_date", "2023-12-12");
-    formData.append("categories", "[1,2,3]");
-    formData.append("description", "სდკსდჯლსკჯდკლასჯდლად");
-    formData.append("email", "giori.giorgadze@redberry.ge");
+    formData.append("title", data.author);
+    formData.append("author", data.author);
+    formData.append("publish_date", data.publish_date.toISOString());
+    const categoryIds = pickedCategories.map((category) => category.id);
+    console.log(categoryIds)
+    formData.append("categories", `[${categoryIds}]`);
+    formData.append("description", data.description);
+    formData.append("email", data.email);
     formData.append("image", data.image);
 
     try {
