@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { TCategory } from "../../components/HeroCategories/HeroCategories";
 import { useFetch } from "../../utils/useFetch";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
 export type TBlogForm = {
   author: string;
@@ -33,7 +34,7 @@ export const AddBlog = () => {
       publish_date: new Date(),
       categories: [],
       email: "",
-      image: ""
+      image: "",
     },
   });
 
@@ -110,45 +111,48 @@ export const AddBlog = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
-  
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const binaryString = reader.result as string;
-  
-        setValue("image", `image string(${binaryString})`);
+
+        setValue("image", selectedFile);
       };
-      reader.readAsBinaryString(selectedFile);
+      reader.readAsDataURL(selectedFile);
     }
   };
 
   const handleFormSubmit = async (data: TBlogForm) => {
     const categoryIdsAsString = pickedCategories.map((category) => category.id);
-    const formattedDate = data.publish_date.toISOString().split('T')[0];
+    const formattedDate = data.publish_date.toISOString().split("T")[0];
 
-  const formattedData = {
-    ...data,
-    publish_date: formattedDate,
-    categories: categoryIdsAsString,
-  };
+    const formattedData = {
+      ...data,
+      publish_date: formattedDate,
+      categories: categoryIdsAsString,
+    };
+    const formData = new FormData();
+    formData.append("title", "სდსკდოს");
+    formData.append("author", "დსჯიჯდს სდჯსდს");
+    formData.append("publish_date", "2023-12-12");
+    formData.append("categories", "[1,2,3]");
+    formData.append("description", "სდკსდჯლსკჯდკლასჯდლად");
+    formData.append("email", "giori.giorgadze@redberry.ge");
+    formData.append("image", data.image);
+
     try {
-      const response = await fetch("https://api.blog.redberryinternship.ge/api/blogs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer${token}`,
-        },
-        body: JSON.stringify(formattedData),
-      });
-  
-      if (response.status === 204) {
-        console.log("Blog added successfully!");
-      } else {
-        throw new Error(`Failed to add blog. Status: ${response.status}`);
-      }
+      await axios.post(
+        "https://api.blog.redberryinternship.ge/api/blogs",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
-      console.error("Error adding blog:", error);
+      console.log(error);
     }
-    console.log(formattedData)
   };
   return (
     <div className="addBlog-wrapper">
