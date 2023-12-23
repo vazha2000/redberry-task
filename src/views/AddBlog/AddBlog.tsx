@@ -65,7 +65,7 @@ export const AddBlog = () => {
   );
 
   const [pickedCategories, setPickedCategories] = useState<
-    { id: string; title: string }[]
+    { id: number; title: string }[]
   >([]);
 
   const handleCategoryClick = (categoryTitle: string, categoryId: number) => {
@@ -92,7 +92,7 @@ export const AddBlog = () => {
       ]);
       setPickedCategories([
         ...pickedCategories,
-        { id: categoryId.toString(), title: categoryTitle },
+        { id: categoryId, title: categoryTitle },
       ]);
     }
   };
@@ -122,7 +122,7 @@ export const AddBlog = () => {
   };
 
   const handleFormSubmit = async (data: TBlogForm) => {
-    const categoryIdsAsString = pickedCategories.map((category) => category.id.toString());
+    const categoryIdsAsString = pickedCategories.map((category) => category.id);
     const formattedDate = data.publish_date.toISOString().split('T')[0];
 
   const formattedData = {
@@ -135,7 +135,7 @@ export const AddBlog = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer${token}`,
         },
         body: JSON.stringify(formattedData),
       });
