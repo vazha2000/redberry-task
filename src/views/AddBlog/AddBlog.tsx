@@ -10,9 +10,10 @@ export type TBlogForm = {
   author: string;
   title: string;
   description: string;
-  publishDate: Date;
+  publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
+  image: string;
 };
 export const AddBlog = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -29,9 +30,10 @@ export const AddBlog = () => {
       author: "",
       title: "",
       description: "",
-      publishDate: new Date(),
+      publish_date: new Date(),
       categories: [],
       email: "",
+      image: ""
     },
   });
 
@@ -62,11 +64,18 @@ export const AddBlog = () => {
     initialCategoriesData
   );
 
-  const [pickedCategories, setPickedCategories] = useState<{ id: string; title: string }[]>([]);
+  const [pickedCategories, setPickedCategories] = useState<
+    { id: string; title: string }[]
+  >([]);
 
   const handleCategoryClick = (categoryTitle: string, categoryId: number) => {
-    const currentCategories = watch("categories") as { id: number; title: string }[];
-    const isCategorySelected = currentCategories.some((category) => category.title === categoryTitle)
+    const currentCategories = watch("categories") as {
+      id: number;
+      title: string;
+    }[];
+    const isCategorySelected = currentCategories.some(
+      (category) => category.title === categoryTitle
+    );
 
     if (isCategorySelected) {
       setValue(
@@ -77,8 +86,14 @@ export const AddBlog = () => {
         pickedCategories.filter((category) => category.title !== categoryTitle)
       );
     } else {
-      setValue("categories", [...currentCategories, { id: categoryId, title: categoryTitle }]);
-      setPickedCategories([...pickedCategories, { id: categoryId.toString(), title: categoryTitle }]);
+      setValue("categories", [
+        ...currentCategories,
+        { id: categoryId, title: categoryTitle },
+      ]);
+      setPickedCategories([
+        ...pickedCategories,
+        { id: categoryId.toString(), title: categoryTitle },
+      ]);
     }
   };
 
@@ -91,12 +106,46 @@ export const AddBlog = () => {
       background: category?.background_color,
     };
   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setValue("image", reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  const handleFormSubmit = async (data: TBlogForm) => {
+    const categoryIdsAsString = pickedCategories.map((category) => category.id.toString());
+    try {
+      const response = await fetch("https://api.blog.redberryinternship.ge/api/blogs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({...data, categories: categoryIdsAsString}),
+      });
+  
+      if (response.status === 204) {
+        console.log("Blog added successfully!");
+      } else {
+        throw new Error(`Failed to add blog. Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error adding blog:", error);
+    }
+  };
   return (
     <div className="addBlog-wrapper">
       <div className="addBlog">
         <h1>ბლოგის დამატება</h1>
         <form
-          onSubmit={handleSubmit((data) => console.log(data))}
+          onSubmit={handleSubmit(handleFormSubmit)}
           className="addBlog__form"
         >
           <div className="upload-container">
@@ -120,6 +169,7 @@ export const AddBlog = () => {
                   type="file"
                   accept="image/*"
                   style={{ display: "none" }}
+                  onChange={handleFileChange}
                 />
               </div>
             </div>
@@ -171,17 +221,17 @@ export const AddBlog = () => {
                   <img src="assets/svg/calendar.svg" alt="calendar" />
                 </div>
                 <Controller
-                  name="publishDate"
+                  name="publish_date"
                   control={control}
                   defaultValue={new Date()}
                   render={({ field }) => (
                     <DatePicker
-                      {...register("publishDate", { required: true })}
+                      {...register("publish_date", { required: true })}
                       dateFormat="dd-MM-yyyy"
                       selected={field.value}
                       // onChange={(date: Date) => field.onChange(date)}
-                      onChange={(date: Date) => setValue("publishDate", date)}
-                      className={errors.publishDate && "error"}
+                      onChange={(date: Date) => setValue("publish_date", date)}
+                      className={errors.publish_date && "error"}
                     />
                   )}
                 />
