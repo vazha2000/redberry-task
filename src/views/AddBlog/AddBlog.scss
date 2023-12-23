@@ -170,6 +170,11 @@
               &:focus {
                 border: 1.5px solid #5d37f3;
               }
+
+              &.error {
+                border: 1px solid $text-danger;
+                background: #faf2f3;
+              }
             }
             &__icon {
               display: flex;

@@ -95,7 +95,10 @@ export const AddBlog = () => {
     <div className="addBlog-wrapper">
       <div className="addBlog">
         <h1>ბლოგის დამატება</h1>
-        <form className="addBlog__form">
+        <form
+          onSubmit={handleSubmit((data) => console.log(data))}
+          className="addBlog__form"
+        >
           <div className="upload-container">
             <label>ატვირთეთ ფოტო</label>
             <div className="upload">
@@ -125,22 +128,26 @@ export const AddBlog = () => {
             <div className="author">
               <label>ავტორი *</label>
               <input
-                {...register("author")}
+                {...register("author", { required: true })}
                 type="text"
                 placeholder="შეიყვანეთ ავტორი"
+                className={errors.author ? "error" : ""}
               />
               <ul className="author__list">
-                <li>მინიმუმ 4 სიმბოლო</li>
-                <li>მინიმუმ ორი სიტყვა</li>
-                <li>მხოლოდ ქართული სიმბოლოები</li>
+                <li className="author__list__item">მინიმუმ 4 სიმბოლო</li>
+                <li className="author__list__item">მინიმუმ ორი სიტყვა</li>
+                <li className="author__list__item">
+                  მხოლოდ ქართული სიმბოლოები
+                </li>
               </ul>
             </div>
             <div className="title">
               <label>სათაური *</label>
               <input
-                {...register("title")}
+                {...register("title", { required: true })}
                 type="text"
                 placeholder="შეიყვანეთ სათაური"
+                className={errors.title ? "error" : ""}
               />
               <ul>
                 <li>მინიმუმ ორი სიმბოლო</li>
@@ -150,9 +157,9 @@ export const AddBlog = () => {
           <div className="description-container">
             <label>აღწერა *</label>
             <textarea
-              {...register("description")}
+              {...register("description", { required: true })}
               placeholder="შეიყვანეთ აღწერა"
-              className="description-content"
+              className={`description-content ${errors.description && "error"}`}
             ></textarea>
             <p>მინიმუმ 4 სიმბოლო</p>
           </div>
@@ -169,9 +176,12 @@ export const AddBlog = () => {
                   defaultValue={new Date()}
                   render={({ field }) => (
                     <DatePicker
+                      {...register("publishDate", { required: true })}
                       dateFormat="dd-MM-yyyy"
                       selected={field.value}
-                      onChange={(date: Date) => field.onChange(date)}
+                      // onChange={(date: Date) => field.onChange(date)}
+                      onChange={(date: Date) => setValue("publishDate", date)}
+                      className={errors.publishDate && "error"}
                     />
                   )}
                 />
@@ -180,7 +190,9 @@ export const AddBlog = () => {
             <div className="category-container">
               <label>კატეგორია</label>
               <div className="category-list-container">
-                {pickedCategories.length === 0 && <span>აირჩიეთ კატეგორია</span>}
+                {pickedCategories.length === 0 && (
+                  <span>აირჩიეთ კატეგორია</span>
+                )}
                 <ul className="picked-category-list">
                   {pickedCategories.map((picked, index) => (
                     <div key={index} style={getColorStyles(picked)}>
@@ -231,10 +243,15 @@ export const AddBlog = () => {
           </div>
           <div className="email-container">
             <label>ელ-ფოსტა *</label>
-            <input {...register("email")} type="text" />
+            <input
+              {...register("email", { required: true })}
+              type="text"
+              className={errors.email && "error"}
+              placeholder="Example@redberry.ge"
+            />
           </div>
           <div className="submit-button">
-            <button>გამოქვეყნება</button>
+            <button type="submit">გამოქვეყნება</button>
           </div>
         </form>
       </div>
