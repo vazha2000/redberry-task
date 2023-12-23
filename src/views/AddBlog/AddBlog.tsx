@@ -110,17 +110,26 @@ export const AddBlog = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
-
+  
       const reader = new FileReader();
       reader.onloadend = () => {
-        setValue("image", reader.result as string);
+        const binaryString = reader.result as string;
+  
+        setValue("image", `image string(${binaryString})`);
       };
-      reader.readAsDataURL(selectedFile);
+      reader.readAsBinaryString(selectedFile);
     }
   };
 
   const handleFormSubmit = async (data: TBlogForm) => {
     const categoryIdsAsString = pickedCategories.map((category) => category.id.toString());
+    const formattedDate = data.publish_date.toISOString().split('T')[0];
+
+  const formattedData = {
+    ...data,
+    publish_date: formattedDate,
+    categories: categoryIdsAsString,
+  };
     try {
       const response = await fetch("https://api.blog.redberryinternship.ge/api/blogs", {
         method: "POST",
@@ -128,7 +137,7 @@ export const AddBlog = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({...data, categories: categoryIdsAsString}),
+        body: JSON.stringify(formattedData),
       });
   
       if (response.status === 204) {
@@ -139,6 +148,7 @@ export const AddBlog = () => {
     } catch (error) {
       console.error("Error adding blog:", error);
     }
+    console.log(formattedData)
   };
   return (
     <div className="addBlog-wrapper">
