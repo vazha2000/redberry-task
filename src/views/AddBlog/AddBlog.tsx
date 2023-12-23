@@ -11,7 +11,7 @@ export type TBlogForm = {
   title: string;
   description: string;
   publishDate: Date;
-  categories: string[];
+  categories: { id: number; title: string }[];
   email: string;
 };
 export const AddBlog = () => {
@@ -62,23 +62,23 @@ export const AddBlog = () => {
     initialCategoriesData
   );
 
-  const [pickedCategories, setPickedCategories] = useState<string[]>([]);
+  const [pickedCategories, setPickedCategories] = useState<{ id: string; title: string }[]>([]);
 
-  const handleCategoryClick = (categoryTitle: string) => {
-    const currentCategories = watch("categories");
-    const isCategorySelected = currentCategories.includes(categoryTitle);
+  const handleCategoryClick = (categoryTitle: string, categoryId: number) => {
+    const currentCategories = watch("categories") as { id: number; title: string }[];
+    const isCategorySelected = currentCategories.some((category) => category.title === categoryTitle)
 
     if (isCategorySelected) {
       setValue(
         "categories",
-        currentCategories.filter((category) => category !== categoryTitle)
+        currentCategories.filter((category) => category.title !== categoryTitle)
       );
       setPickedCategories(
-        pickedCategories.filter((category) => category !== categoryTitle)
+        pickedCategories.filter((category) => category.title !== categoryTitle)
       );
     } else {
-      setValue("categories", [...currentCategories, categoryTitle]);
-      setPickedCategories([...pickedCategories, categoryTitle]);
+      setValue("categories", [...currentCategories, { id: categoryId, title: categoryTitle }]);
+      setPickedCategories([...pickedCategories, { id: categoryId.toString(), title: categoryTitle }]);
     }
   };
 
@@ -195,9 +195,9 @@ export const AddBlog = () => {
                 )}
                 <ul className="picked-category-list">
                   {pickedCategories.map((picked, index) => (
-                    <div key={index} style={getColorStyles(picked)}>
+                    <div key={index} style={getColorStyles(picked.title)}>
                       <li key={index} className="picked-category-list__item">
-                        {picked}
+                        {picked.title}
                       </li>
                       <img
                         onClick={() =>
@@ -225,7 +225,7 @@ export const AddBlog = () => {
                   <ul className="category-list">
                     {categoriesData.data.map((item) => (
                       <li
-                        onClick={() => handleCategoryClick(item.title)}
+                        onClick={() => handleCategoryClick(item.title, item.id)}
                         key={item.id}
                         className="category-list__item"
                         style={{
