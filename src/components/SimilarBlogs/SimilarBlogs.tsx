@@ -60,7 +60,7 @@ export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
           <h2>მსგავსი სტატიები</h2>
           <div className="arrows">
             <img className="custom-arrow custom-arrow-left" src="assets/svg/arrow-left.svg" alt="" />
-            <img className="custom-arrow custom-arrow-right" src="assets/svg/arrow-left.svg" alt="" />
+            <img className="custom-arrow custom-arrow-right" src="assets/svg/arrow-right.svg" alt="" />
           </div>
         </div>
         <div className="similarBlogs__list">
