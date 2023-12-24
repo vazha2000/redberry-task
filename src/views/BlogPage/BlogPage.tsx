@@ -1,46 +1,85 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./BlogPage.scss";
 import { Navbar } from "../../components/Navbar";
+import axios from "axios";
+import { useParams } from "react-router";
 
+type TBlogData = {
+  author: string;
+  categories: [
+    {
+      id: number;
+      title: string;
+      text_color: string;
+      background_color: string;
+    }
+  ];
+  description: string;
+  email: string;
+  id: number;
+  image: string;
+  publish_date: string;
+  title: string;
+};
 export const BlogPage = () => {
+  const { id } = useParams();
+  const token =
+    "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
+
+  const [data, setData] = useState<TBlogData>();
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `https://api.blog.redberryinternship.ge/api/blogs/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       <Navbar />
       <div className="blogPage-wrapper">
         <div className="blogPage">
           <div className="blogPage__image">
-            <img src="assets/images/test-cover.jpeg" alt="" />
+            <img src={data?.image} alt="" />
           </div>
           <div className="blogPage__content">
-            <h4>სახელი გვარი</h4>
+            <h4>{data?.author}</h4>
             <header className="blogPage__content__info">
               <div className="blogPage-timeEmail">
-                <p>12.12.2023 example@email.com</p>
+                <p>
+                  {data?.publish_date} {data?.email}
+                </p>
               </div>
               <div className="blogPage-title">
-                <h2>მობილური ფოტოგრაფიის კონკურსის გამარჯვებულთა ვინაობა ცნობილია</h2>
+                <h2>{data?.title}</h2>
               </div>
               <ul className="blogPage__content__info__list">
-                <li>koko</li>
-                <li>koko</li>
-                <li>koko</li>
+                {data?.categories.map((item) => (
+                  <li
+                    key={item.id}
+                    style={{
+                      color: item.text_color,
+                      backgroundColor: item.background_color,
+                    }}
+                  >
+                    {item.title}
+                  </li>
+                ))}
               </ul>
             </header>
-            <section>
-              6 თვის შემდეგ ყველის ბრმა დეგუსტაციის დროც დადგა. მაქსიმალური
-              სიზუსტისთვის, ეს პროცესი ორჯერ გაიმეორეს და ორივეჯერ იმ ყველს
-              მიენიჭა უპირატესობა, რომელსაც ჰიპ-ჰოპს ასმენინებდნენ. „მუსიკალური
-              ენერგია პირდაპირ ყველის შუაგულში რეზონირებდა“, — აღნიშნა ბერნის
-              ხელოვნების უნივერსიტეტის წარმომადგენელმა, მაიკლ ჰერენბერგმა. რა
-              თქმა უნდა, ეს ერთი კვლევა საკმარისი არ არის საბოლოო დასკვნების
-              გამოსატანად. სანაცვლოდ, მეცნიერებს სურთ, უშუალოდ ჰიპ-ჰოპის ჟანრის
-              სხვადასხვა მუსიკა მოასმენინონ რამდენიმე ყველს და უკვე ისინი
-              შეაჯიბრონ ერთმანეთს. აქვე საგულისხმოა, რომ როგორც ბერნის
-              მეცნიერები განმარტავენ, ექსპერიმენტს საფუძვლად არა ყველის
-              გაუმჯობესებული წარმოება, არამედ კულტურული საკითხები დაედო. მათი
-              თქმით, ადამიანებს უყვართ ყველი და მუსიკა, ამიტომაც საინტერესოა ამ
-              ორის კავშირის დანახვა.
-            </section>
+            <section>{data?.description}</section>
           </div>
         </div>
       </div>
