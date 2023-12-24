@@ -52,7 +52,7 @@ export const BlogCard = ({
             </ul>
             <section>{description}</section>
             <footer>
-              <Link to={`/blog/${id}`}>
+              <Link to={`/blog/${id}`} onClick={() => window.scrollTo({top: 0, behavior: "smooth"})}>
                 <div className="see-full">
                   <span>სრულად ნახვა</span>
                   <img src="assets/svg/arrow.svg" alt="arrow top right" />
