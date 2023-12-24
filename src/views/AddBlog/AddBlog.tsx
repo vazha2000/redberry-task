@@ -216,9 +216,9 @@ export const AddBlog = () => {
               <input
                 {...register("author", {
                   required: true,
-                  validate: {
-                    customValidation: (value) => validateAuthor(value),
-                  },
+                  // validate: {
+                  //   customValidation: (value) => validateAuthor(value),
+                  // },
                 })}
                 onFocus={() => setAuthorFocused(true)}
                 onBlur={() => setAuthorFocused(false)}
@@ -229,23 +229,23 @@ export const AddBlog = () => {
               />
               <ul className="author__list">
                 <li
-                  className={`author__list__item ${
-                    authorFocused && authorErrors[0] === true ? "error" : "success"
-                  } ${!authorFocused && "normal"}`}
+                  // className={`author__list__item ${
+                  //   authorFocused && authorErrors[0] === true ? "error" : "success"
+                  // } ${!authorFocused && "normal"}`}
                 >
                   მინიმუმ 4 სიმბოლო
                 </li>
                 <li
-                  className={`author__list__item ${
-                    authorFocused && authorErrors[1] === true ? "error" : "success"
-                  } ${!authorFocused && "normal"}`}
+                  // className={`author__list__item ${
+                  //   authorFocused && authorErrors[1] === true ? "error" : "success"
+                  // } ${!authorFocused && "normal"}`}
                 >
                   მინიმუმ ორი სიტყვა
                 </li>
                 <li
-                  className={`author__list__item ${
-                    authorFocused && authorErrors[2] === true ? "error" : "success"
-                  } ${!authorFocused && "normal"}`}
+                  // className={`author__list__item ${
+                  //   authorFocused && authorErrors[2] === true ? "error" : "success"
+                  // } ${!authorFocused && "normal"}`}
                 >
                   მხოლოდ ქართული სიმბოლოები
                 </li>
