@@ -11,9 +11,9 @@ type TSimilarBlogsProps = {
       text_color: string;
       background_color: string;
     }
-  ]
-}
-export const SimilarBlogs = ({categories}: TSimilarBlogsProps) => {
+  ];
+};
+export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
 
@@ -38,6 +38,14 @@ export const SimilarBlogs = ({categories}: TSimilarBlogsProps) => {
     fetchData();
   }, []);
 
+  const filteredBlogs = blogData?.data.filter((blog) =>
+    blog.categories.some((blogCategory) =>
+      categories?.some(
+        (selectedCategory) => selectedCategory.title === blogCategory.title
+      )
+    )
+  );
+
   return (
     <div className="similarBlogs-wrapper">
       <div className="similarBlogs">
@@ -49,9 +57,7 @@ export const SimilarBlogs = ({categories}: TSimilarBlogsProps) => {
             <span>skdo</span>
           </div>
         </div>
-        <div className="similarBlogs__list">
-          
-        </div>
+        <div className="similarBlogs__list"></div>
       </div>
     </div>
   );
