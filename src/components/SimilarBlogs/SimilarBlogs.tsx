@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import "./SimilarBlogs.scss";
 import { TBlogsType } from "../HeroBlogs/HeroBlogs";
 import axios from "axios";
+import { BlogCard } from "../BlogCard";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { A11y, Navigation } from "swiper/modules";
 
 type TSimilarBlogsProps = {
   categories?: [
@@ -52,12 +59,40 @@ export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
         <div className="similarBlogs__headerArrows">
           <h2>მსგავსი სტატიები</h2>
           <div className="arrows">
-            <img src="assets/svg/arrow-left.svg" alt="left" />
-            <img src="assets/svg/arrow-left.svg" alt="right" />
-            <span>skdo</span>
+            <img className="custom-arrow custom-arrow-left" src="assets/svg/arrow-left.svg" alt="" />
+            <img className="custom-arrow custom-arrow-right" src="assets/svg/arrow-left.svg" alt="" />
           </div>
         </div>
-        <div className="similarBlogs__list"></div>
+        <div className="similarBlogs__list">
+          <Swiper
+            modules={[A11y, Navigation]}
+            navigation={{
+              nextEl: '.custom-arrow-right',
+              prevEl: '.custom-arrow-left',
+            }}
+            spaceBetween={72}
+            slidesPerView={3}
+            effect="fade"
+            loop={false}
+            speed={800}
+            className="custom-slider"
+          >
+            {filteredBlogs?.map((item, index) => (
+              <SwiperSlide key={index}>
+                <BlogCard
+                  author={item.author}
+                  categories={item.categories}
+                  description={item.description}
+                  id={item.id}
+                  image={item.image}
+                  publishDate={item.publish_date}
+                  title={item.title}
+                  key={item.id}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   );
