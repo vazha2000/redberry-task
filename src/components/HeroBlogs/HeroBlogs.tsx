@@ -50,10 +50,13 @@ export const HeroBlogs = ({activeCategories}:THeroBlogsProps) => {
     fetchData();
   }, []);
 
+  const localCategories = localStorage.getItem("activeCategories");
+  const parsedCategories = JSON.parse(localCategories!);
+
   const filteredBlogs = blogData?.data.filter((blog) =>
     blog.categories.some((blogCategory) =>
-      activeCategories?.some(
-        (selectedCategory) => selectedCategory === blogCategory.title
+      parsedCategories?.some(
+        (selectedCategory:string) => selectedCategory === blogCategory.title
       )
     )
   );
