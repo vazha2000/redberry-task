@@ -4,8 +4,9 @@ import { Navbar } from "../../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { SimilarBlogs } from "../../components/SimilarBlogs";
 
-type TBlogData = {
+export type TBlogData = {
   author: string;
   categories: [
     {
@@ -89,6 +90,7 @@ export const BlogPage = () => {
           </div>
         </Link>
       </div>
+      <SimilarBlogs />
     </>
   );
 };
