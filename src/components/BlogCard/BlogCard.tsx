@@ -38,9 +38,16 @@ export const BlogCard = ({
             <h2>{title}</h2>
             <ul className="blogCard__content__info__list">
               {categories.map((item) => (
-                <li key={item.id}>{item.title}</li>
+                <li
+                  key={item.id}
+                  style={{
+                    color: item.text_color,
+                    backgroundColor: item.background_color,
+                  }}
+                >
+                  {item.title}
+                </li>
               ))}
-              {/* <li>koko</li> */}
             </ul>
             <section>{description}</section>
             <footer>
