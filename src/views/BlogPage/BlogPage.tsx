@@ -47,7 +47,7 @@ export const BlogPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id]);
   return (
     <>
       <Navbar />
