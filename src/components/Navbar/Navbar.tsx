@@ -4,23 +4,27 @@ import { Login } from "../Modals/Login";
 import { Overlay } from "../Overlay";
 import { SuccessAuth } from "../Modals/SuccessAuth";
 import { useAuth } from "../../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isLoginClicked, setIsLoginClicked] = useState(false);
 
   const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="navbar-wrapper">
       <nav className="navbar">
         <div className="navbar__logo">
-          <img src="assets/images/logo.png" alt="logo" />
+          <Link to="/">
+            <img src="assets/images/logo.png" alt="logo" />
+          </Link>
         </div>
         <div className="navbar__buttons">
           {/* {!isLoggedIn && (
           )} */}
           {isLoggedIn ? (
-            <button>დაამატე ბლოგი</button>
+            <button onClick={() => navigate("/add-blog")}>დაამატე ბლოგი</button>
           ) : (
             <button onClick={() => setIsLoginClicked(true)}>შესვლა</button>
           )}

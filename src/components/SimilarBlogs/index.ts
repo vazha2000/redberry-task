@@ -1,0 +1,1 @@
+export { SimilarBlogs } from "./SimilarBlogs";

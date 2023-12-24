@@ -3,7 +3,7 @@ import "./HeroBlogs.scss";
 import { BlogCard } from "../BlogCard";
 import axios from "axios";
 
-type TBlogsType = {
+export type TBlogsType = {
   data: [
     {
       id: number;

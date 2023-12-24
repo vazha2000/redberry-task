@@ -1,5 +1,6 @@
 import React from "react";
 import "./BlogCard.scss";
+import { Link } from "react-router-dom";
 type BlogCardProps = {
   author: string;
   publishDate: string;
@@ -51,10 +52,12 @@ export const BlogCard = ({
             </ul>
             <section>{description}</section>
             <footer>
-              <div className="see-full">
-                <span>სრულად ნახვა</span>
-                <img src="assets/svg/arrow.svg" alt="arrow top right" />
-              </div>
+              <Link to={`/blog/${id}`} onClick={() => window.scrollTo({top: 0, behavior: "smooth"})}>
+                <div className="see-full">
+                  <span>სრულად ნახვა</span>
+                  <img src="assets/svg/arrow.svg" alt="arrow top right" />
+                </div>
+              </Link>
             </footer>
           </header>
         </div>

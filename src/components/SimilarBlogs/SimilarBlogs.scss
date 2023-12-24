@@ -1,0 +1,36 @@
+@import "../../styles/mixins.scss";
+@import "../../styles/_variables.scss";
+
+.similarBlogs-wrapper {
+  padding: 0 76px;
+
+  .similarBlogs {
+    &__headerArrows {
+      display: flex;
+      justify-content: space-between;
+      h2 {
+        color: $text-primary-color;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 40px;
+        margin-bottom: 40px;
+      }
+
+      .arrows {
+        display: flex;
+        gap: 24px;
+        // > img:nth-child(2) {
+        //   transform: rotate(180deg);
+        // }
+      }
+
+      .custom-arrow {
+        cursor: pointer;
+      }
+    }
+
+    &__list {
+      margin-bottom: 475px;
+    }
+  }
+}
