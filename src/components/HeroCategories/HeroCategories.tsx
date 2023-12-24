@@ -34,13 +34,28 @@ export const HeroCategories = () => {
     token,
     initialCategoriesData
   );
-
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
+  const handleCategoryAdd = (title: string) => {
+    if (!activeCategories.includes(title)) {
+      setActiveCategories([...activeCategories, title]);
+    } else {
+      setActiveCategories(activeCategories.filter((item) => item !== title));
+    }
+  };
 
   return (
     <div className="heroCategories-wrapper">
       <div className="heroCategories">
         {categoriesData.data.map((item) => (
-          <button key={item.id} className="heroCategories__button" style={{color: item.text_color, backgroundColor: item.background_color}}>
+          <button
+            key={item.id}
+            onClick={() => handleCategoryAdd(item.title)}
+            className={`heroCategories__button ${activeCategories.includes(item.title) ? "active": ""}`}
+            style={{
+              color: item.text_color,
+              backgroundColor: item.background_color,
+            }}
+          >
             {item.title}
           </button>
         ))}
