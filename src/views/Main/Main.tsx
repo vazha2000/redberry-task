@@ -13,7 +13,7 @@ export const Main = () => {
       <Navbar />
       <Hero />
       <HeroCategories activeCategories={activeCategories} setActiveCategories={setActiveCategories}/>
-      <HeroBlogs />
+      <HeroBlogs activeCategories={activeCategories}/>
     </div>
   )
 }

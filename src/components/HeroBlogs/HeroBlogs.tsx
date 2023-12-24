@@ -21,7 +21,11 @@ export type TBlogsType = {
     }
   ];
 };
-export const HeroBlogs = () => {
+type THeroBlogsProps = {
+  activeCategories: string[]
+}
+export const HeroBlogs = ({activeCategories}:THeroBlogsProps) => {
+
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
 
@@ -46,10 +50,20 @@ export const HeroBlogs = () => {
     fetchData();
   }, []);
 
+  const filteredBlogs = blogData?.data.filter((blog) =>
+    blog.categories.some((blogCategory) =>
+      activeCategories?.some(
+        (selectedCategory) => selectedCategory === blogCategory.title
+      )
+    )
+  );
+
+  const blogsToRender = activeCategories.length > 0 ? filteredBlogs : blogData?.data;
+
   return (
     <div className="heroBlogs-wrapper">
       <div className="heroBlogs">
-        {blogData?.data.map((item) => (
+        {blogsToRender?.map((item) => (
           <BlogCard
             key={item.id}
             author={item.author}
