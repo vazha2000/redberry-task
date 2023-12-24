@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./HeroCategories.scss";
 import { useFetch } from "../../utils/useFetch";
 
-type TCategory = {
+export type TCategory = {
   data: [
     {
       id: number;
