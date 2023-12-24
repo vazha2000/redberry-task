@@ -4,7 +4,7 @@ import { Login } from "../Modals/Login";
 import { Overlay } from "../Overlay";
 import { SuccessAuth } from "../Modals/SuccessAuth";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isLoginClicked, setIsLoginClicked] = useState(false);
@@ -16,7 +16,9 @@ export const Navbar = () => {
     <div className="navbar-wrapper">
       <nav className="navbar">
         <div className="navbar__logo">
-          <img src="assets/images/logo.png" alt="logo" />
+          <Link to="/">
+            <img src="assets/images/logo.png" alt="logo" />
+          </Link>
         </div>
         <div className="navbar__buttons">
           {/* {!isLoggedIn && (
