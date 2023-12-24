@@ -13,7 +13,12 @@ export type TCategory = {
   ];
 };
 
-export const HeroCategories = () => {
+type TCategoryProps = {
+  activeCategories: string[];
+  setActiveCategories: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export const HeroCategories = ({activeCategories, setActiveCategories}:TCategoryProps) => {
   const url = "https://api.blog.redberryinternship.ge/api/categories";
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
@@ -34,7 +39,7 @@ export const HeroCategories = () => {
     token,
     initialCategoriesData
   );
-  const [activeCategories, setActiveCategories] = useState<string[]>([]);
+
   const handleCategoryAdd = (title: string) => {
     if (!activeCategories.includes(title)) {
       setActiveCategories([...activeCategories, title]);
