@@ -3,6 +3,7 @@ import "./BlogPage.scss";
 import { Navbar } from "../../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
 type TBlogData = {
   author: string;
@@ -82,6 +83,11 @@ export const BlogPage = () => {
             <section>{data?.description}</section>
           </div>
         </div>
+        <Link to="/">
+          <div className="blogPage-back">
+            <img src="assets/svg/arrow-left.svg" alt="arrow left" />
+          </div>
+        </Link>
       </div>
     </>
   );

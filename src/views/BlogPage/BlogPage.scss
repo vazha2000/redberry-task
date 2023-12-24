@@ -2,6 +2,7 @@
 @import "../../styles/mixins";
 
 .blogPage-wrapper {
+  position: relative;
   width: 720px;
   margin: 0 auto;
 
@@ -77,5 +78,13 @@
         margin-bottom: 98px;
       }
     }
+  }
+
+  .blogPage-back {
+    position: absolute;
+    top: 0;
+    left: -324px;
+    display: flex;
+    cursor: pointer;
   }
 }
