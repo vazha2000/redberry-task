@@ -1,33 +1,55 @@
 import React from "react";
 import "./BlogCard.scss";
-
-export const BlogCard = () => {
+type BlogCardProps = {
+  author: string;
+  publishDate: string;
+  title: string;
+  categories: {
+    id: number;
+    title: string;
+    text_color: string;
+    background_color: string;
+  }[];
+  description: string;
+  image: string;
+  id: number;
+};
+export const BlogCard = ({
+  id,
+  author,
+  categories,
+  description,
+  image,
+  publishDate,
+  title,
+}: BlogCardProps) => {
   return (
     <div className="blogCard-wrapper">
       <div className="blogCard">
         <div className="blogCard__image">
           <div className="image">
-            <img src="assets/images/test-cover.jpeg" alt="test" />
+            <img src={image} alt="test" />
           </div>
         </div>
         <div className="blogCard__content">
-          <h4>ნია გოგსაძე</h4>
+          <h4>{author}</h4>
           <header className="blogCard__content__info">
-            <time>02.11.2023</time>
-            <h2>EOMM-ის მრჩეველთა საბჭოს ნინო ეგაძე შეუერთდა</h2>
+            <time>{publishDate}</time>
+            <h2>{title}</h2>
             <ul className="blogCard__content__info__list">
-              <li>მარკეტი</li>
-              <li>მარკეტი</li>
-              <li>მარკეტი</li>
+              {categories.map((item) => (
+                <li
+                  key={item.id}
+                  style={{
+                    color: item.text_color,
+                    backgroundColor: item.background_color,
+                  }}
+                >
+                  {item.title}
+                </li>
+              ))}
             </ul>
-            <section>
-              6 თვის შემდეგ ყველის ბრმა დეგუსტაციის დროც დადგა. მაქსიმალური
-              სიზუსტისთვის, ეს პროცესი Lorem ipsum, dolor sit amet consectetur
-              adipisicing elit. Assumenda, magnam? Nihil mollitia, inventore
-              ipsa itaque molestiae impedit deserunt praesentium quas. Deserunt
-              veritatis officiis culpa harum repudiandae possimus quibusdam
-              laudantium fugiat.
-            </section>
+            <section>{description}</section>
             <footer>
               <div className="see-full">
                 <span>სრულად ნახვა</span>
