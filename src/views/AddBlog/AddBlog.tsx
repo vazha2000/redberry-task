@@ -26,6 +26,7 @@ export const AddBlog = () => {
     watch,
     control,
     setValue,
+    trigger,
   } = useForm<TBlogForm>({
     defaultValues: {
       author: "",
@@ -136,7 +137,6 @@ export const AddBlog = () => {
     formData.append("author", data.author);
     formData.append("publish_date", data.publish_date.toISOString());
     const categoryIds = pickedCategories.map((category) => category.id);
-    console.log(categoryIds)
     formData.append("categories", `[${categoryIds}]`);
     formData.append("description", data.description);
     formData.append("email", data.email);
@@ -156,6 +156,26 @@ export const AddBlog = () => {
       console.log(error);
     }
   };
+
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("author", e.target.value);
+    trigger("author");
+  };
+
+  const [authorErrors, setAuthorErrors] = useState([true, true, true]);
+  const [authorFocused, setAuthorFocused] = useState(false);
+
+  const validateAuthor = (value: string) => {
+    const errors = [
+      value.length < 4,
+      value.trim().split(/\s+/).length < 2,
+      !/^[ა-ჰ\s]*$/.test(value),
+    ];
+  
+    setAuthorErrors(errors);
+    return errors.some((error) => error);
+  };
+
   return (
     <div className="addBlog-wrapper">
       <div className="addBlog">
@@ -194,15 +214,39 @@ export const AddBlog = () => {
             <div className="author">
               <label>ავტორი *</label>
               <input
-                {...register("author", { required: true })}
+                {...register("author", {
+                  required: true,
+                  validate: {
+                    customValidation: (value) => validateAuthor(value),
+                  },
+                })}
+                onFocus={() => setAuthorFocused(true)}
+                onBlur={() => setAuthorFocused(false)}
                 type="text"
                 placeholder="შეიყვანეთ ავტორი"
                 className={errors.author ? "error" : ""}
+                onChange={handleAuthorChange}
               />
               <ul className="author__list">
-                <li className="author__list__item">მინიმუმ 4 სიმბოლო</li>
-                <li className="author__list__item">მინიმუმ ორი სიტყვა</li>
-                <li className="author__list__item">
+                <li
+                  className={`author__list__item ${
+                    authorFocused && authorErrors[0] === true ? "error" : "success"
+                  } ${!authorFocused && "normal"}`}
+                >
+                  მინიმუმ 4 სიმბოლო
+                </li>
+                <li
+                  className={`author__list__item ${
+                    authorFocused && authorErrors[1] === true ? "error" : "success"
+                  } ${!authorFocused && "normal"}`}
+                >
+                  მინიმუმ ორი სიტყვა
+                </li>
+                <li
+                  className={`author__list__item ${
+                    authorFocused && authorErrors[2] === true ? "error" : "success"
+                  } ${!authorFocused && "normal"}`}
+                >
                   მხოლოდ ქართული სიმბოლოები
                 </li>
               </ul>
