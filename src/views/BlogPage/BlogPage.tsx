@@ -90,7 +90,7 @@ export const BlogPage = () => {
           </div>
         </Link>
       </div>
-      <SimilarBlogs />
+      <SimilarBlogs categories={data?.categories}/>
     </>
   );
 };
