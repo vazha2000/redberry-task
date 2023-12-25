@@ -6,6 +6,7 @@ import { TCategory } from "../../components/HeroCategories/HeroCategories";
 import { useFetch } from "../../utils/useFetch";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
+import { Navbar } from "../../components/Navbar";
 
 export type TBlogForm = {
   author: string;
@@ -182,230 +183,241 @@ export const AddBlog2 = () => {
     }
   }, [descriptionValue, isDescriptionFocused, trigger]);
 
+
   return (
-    <div className="addBlog-wrapper">
-      <div className="addBlog">
-        <h1>ბლოგის დამატება</h1>
-        <form
-          onSubmit={handleSubmit(handleDataSubmit)}
-          className="addBlog__form"
-        >
-          <div className="upload-container">
-            <label>ატვირთეთ ფოტო</label>
-            <div className={`upload ${errors.image ? "error" : ""}`}>
-              <div style={{ display: "flex" }}>
-                <img src="assets/svg/folder-add.svg" alt="add file" />
-              </div>
-              <div>
-                <p>
-                  ჩააგდეთ ფაილი აქ ან{" "}
-                  <span
-                    style={{ textDecoration: "underline" }}
-                    onClick={handleTextClick}
-                  >
-                    აირჩიეთ ფაილი
-                  </span>
-                </p>
-                <input
-                  {...register("image", { required: true })}
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="titleAuthor-container">
-            <div className="author">
-              <label>ავტორი *</label>
-              <input
-                {...register("author", { validate: validateAuthor })}
-                type="text"
-                placeholder="შეიყვანეთ ავტორი"
-                className={`${errors.author && "error"} ${
-                  !authorErrors.includes(false) &&
-                  authorErrors.length !== 0 &&
-                  "success"
-                }`}
-                onFocus={() => {
-                  setIsAuthorFocused(true);
-                }}
-              />
-              <ul className="author__list">
-                <li
-                  className={`author__list__item ${
-                    authorErrors[0] === false && "error"
-                  } ${authorErrors[0] === true && "success"}`}
-                >
-                  მინიმუმ 4 სიმბოლო
-                </li>
-                <li
-                  className={`author__list__item ${
-                    authorErrors[1] === false && "error"
-                  } ${authorErrors[1] === true && "success"}`}
-                >
-                  მინიმუმ ორი სიტყვა
-                </li>
-                <li
-                  className={`author__list__item ${
-                    authorErrors[2] === false && "error"
-                  } ${authorErrors[2] === true && "success"}`}
-                >
-                  მხოლოდ ქართული სიმბოლოები
-                </li>
-              </ul>
-            </div>
-            <div className="title">
-              <label>სათაური *</label>
-              <input
-                {...register("title", { required: true, minLength: 2 })}
-                type="text"
-                placeholder="შეიყვანეთ სათაური"
-                className={`${errors.title && "error"} ${
-                  isTitleFocused && !errors.title && "success"
-                }`}
-                onFocus={() => setIsTitleFocused(true)}
-              />
-              <ul className="title__list">
-                <li
-                  className={`title__list__item ${
-                    isTitleFocused ? (errors.title ? "error" : "success") : ""
-                  }`}
-                >
-                  მინიმუმ ორი სიმბოლო
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="description-container">
-            <label>აღწერა *</label>
-            <textarea
-              placeholder="შეიყვანეთ აღწერა"
-              className={`description-content ${
-                errors.description && "error"
-              } ${isDescriptionFocused && !errors.description && "success"}`}
-              {...register("description", { required: true, minLength: 4 })}
-              onFocus={() => setIsDescriptionFocused(true)}
-            ></textarea>
-            <p
-              className={`description-validation ${
-                isDescriptionFocused
-                  ? errors.description
-                    ? "error"
-                    : "success"
-                  : ""
-              }`}
-            >
-              მინიმუმ 4 სიმბოლო
-            </p>
-          </div>
-          <div className="calendarCategory">
-            <div className="calendar-container">
-              <label>გამოქვეყნების თარიღი *</label>
-              <div className="calendar">
-                <div className="calendar__icon">
-                  <img src="assets/svg/calendar.svg" alt="calendar" />
+    <>
+    <Navbar />
+      <div className="addBlog-wrapper">
+        <div className="addBlog">
+          <h1>ბლოგის დამატება</h1>
+          <form
+            onSubmit={handleSubmit(handleDataSubmit)}
+            className="addBlog__form"
+          >
+            <div className="upload-container">
+              <label>ატვირთეთ ფოტო</label>
+              <div className={`upload ${errors.image ? "error" : ""}`}>
+                <div style={{ display: "flex" }}>
+                  <img src="assets/svg/folder-add.svg" alt="add file" />
                 </div>
-                <Controller
-                  name="publish_date"
-                  control={control}
-                  defaultValue={new Date()}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...register("publish_date", { required: true })}
-                      dateFormat="dd-MM-yyyy"
-                      selected={field.value}
-                      autoComplete="off"
-                      // onChange={(date: Date) => field.onChange(date)}
-                      onChange={(date: Date) => {
-                        setValue("publish_date", date);
-                        trigger();
-                      }}
-                      className={errors.publish_date ? "error" : ""}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="category-container">
-              <label>კატეგორია</label>
-              <div
-                id="categoryField"
-                className={`category-list-container ${
-                  errors.categories ? "error" : ""
-                }`}
-              >
-                {pickedCategories.length === 0 && (
-                  <span>აირჩიეთ კატეგორია</span>
-                )}
-                <ul className="picked-category-list">
-                  {pickedCategories.map((picked, index) => (
-                    <div key={index} style={getColorStyles(picked.title)}>
-                      <li key={index} className="picked-category-list__item">
-                        {picked.title}
-                      </li>
-                      <img src="assets/svg/close2.svg" alt="close icon" />
-                    </div>
-                  ))}
-                </ul>
-                <div
-                  className="arrow-down"
-                  style={{ display: "flex", cursor: "pointer" }}
-                >
-                  <img
-                    onClick={() => setIsCategoriesClicked(!isCategoriesClicked)}
-                    src="assets/svg/arrow-down.svg"
-                    alt="arrow down"
+                <div>
+                  <p>
+                    ჩააგდეთ ფაილი აქ ან{" "}
+                    <span
+                      style={{ textDecoration: "underline" }}
+                      onClick={handleTextClick}
+                    >
+                      აირჩიეთ ფაილი
+                    </span>
+                  </p>
+                  <input
+                    {...register("image", { required: true })}
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
                   />
                 </div>
-                {isCategoriesClicked && (
-                  <ul className="category-list">
-                    {categoriesData.data.map((item) => (
-                      <li
-                        onClick={() => handleCategoryClick(item.title, item.id)}
-                        key={item.id}
-                        className="category-list__item"
-                        style={{
-                          color: item.text_color,
-                          background: item.background_color,
-                        }}
-                      >
-                        {item.title}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </div>
-          </div>
-          <div className="email-container">
-            <label>ელ-ფოსტა *</label>
-            <input
-              type="text"
-              placeholder="Example@redberry.ge"
-              {...register("email", {
-                required: true,
-                validate: validateEmail,
-              })}
-              className={`${errors.email && "error"} ${
-                isEmailFocused && !errors.email && "success"
-              }`}
-              onFocus={() => setIsEmailFocused(true)}
-            />
-            {errors.email?.message && (
-              <div className="email-error">
-                <img src="assets/svg/error-circle.svg" alt="" />
-                <p>{errors.email?.message}</p>
+            <div className="titleAuthor-container">
+              <div className="author">
+                <label>ავტორი *</label>
+                <input
+                  {...register("author", { validate: validateAuthor })}
+                  type="text"
+                  placeholder="შეიყვანეთ ავტორი"
+                  className={`${errors.author && "error"} ${
+                    !authorErrors.includes(false) &&
+                    authorErrors.length !== 0 &&
+                    "success"
+                  }`}
+                  onFocus={() => {
+                    setIsAuthorFocused(true);
+                  }}
+                />
+                <ul className="author__list">
+                  <li
+                    className={`author__list__item ${
+                      authorErrors[0] === false && "error"
+                    } ${authorErrors[0] === true && "success"}`}
+                  >
+                    მინიმუმ 4 სიმბოლო
+                  </li>
+                  <li
+                    className={`author__list__item ${
+                      authorErrors[1] === false && "error"
+                    } ${authorErrors[1] === true && "success"}`}
+                  >
+                    მინიმუმ ორი სიტყვა
+                  </li>
+                  <li
+                    className={`author__list__item ${
+                      authorErrors[2] === false && "error"
+                    } ${authorErrors[2] === true && "success"}`}
+                  >
+                    მხოლოდ ქართული სიმბოლოები
+                  </li>
+                </ul>
               </div>
-            )}
-          </div>
-          <div className="submit-button">
-            <button type="submit">გამოქვეყნება</button>
-          </div>
-        </form>
+              <div className="title">
+                <label>სათაური *</label>
+                <input
+                  {...register("title", { required: true, minLength: 2 })}
+                  type="text"
+                  placeholder="შეიყვანეთ სათაური"
+                  className={`${errors.title && "error"} ${
+                    isTitleFocused && !errors.title && "success"
+                  }`}
+                  onFocus={() => setIsTitleFocused(true)}
+                />
+                <ul className="title__list">
+                  <li
+                    className={`title__list__item ${
+                      isTitleFocused ? (errors.title ? "error" : "success") : ""
+                    }`}
+                  >
+                    მინიმუმ ორი სიმბოლო
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="description-container">
+              <label>აღწერა *</label>
+              <textarea
+                placeholder="შეიყვანეთ აღწერა"
+                className={`description-content ${
+                  errors.description && "error"
+                } ${isDescriptionFocused && !errors.description && "success"}`}
+                {...register("description", { required: true, minLength: 4 })}
+                onFocus={() => setIsDescriptionFocused(true)}
+              ></textarea>
+              <p
+                className={`description-validation ${
+                  isDescriptionFocused
+                    ? errors.description
+                      ? "error"
+                      : "success"
+                    : ""
+                }`}
+              >
+                მინიმუმ 4 სიმბოლო
+              </p>
+            </div>
+            <div className="calendarCategory">
+              <div className="calendar-container">
+                <label>გამოქვეყნების თარიღი *</label>
+                <div className="calendar">
+                  <div className="calendar__icon">
+                    <img src="assets/svg/calendar.svg" alt="calendar" />
+                  </div>
+                  <Controller
+                    name="publish_date"
+                    control={control}
+                    defaultValue={new Date()}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...register("publish_date", { required: true })}
+                        dateFormat="dd-MM-yyyy"
+                        selected={field.value}
+                        autoComplete="off"
+                        // onChange={(date: Date) => field.onChange(date)}
+                        onChange={(date: Date) => {
+                          setValue("publish_date", date);
+                          trigger();
+                        }}
+                        className={errors.publish_date ? "error" : ""}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="category-container">
+                <label>კატეგორია</label>
+                <div
+                  id="categoryField"
+                  className={`category-list-container ${
+                    errors.categories ? "error" : ""
+                  }`}
+                >
+                  {pickedCategories.length === 0 && (
+                    <span>აირჩიეთ კატეგორია</span>
+                  )}
+                  <ul className="picked-category-list">
+                    {pickedCategories.map((picked, index) => (
+                      <div key={index} style={getColorStyles(picked.title)}>
+                        <li key={index} className="picked-category-list__item">
+                          {picked.title}
+                        </li>
+                        <img src="assets/svg/close2.svg" alt="close icon" />
+                      </div>
+                    ))}
+                  </ul>
+                  <div
+                    className="arrow-down"
+                    style={{ display: "flex", cursor: "pointer" }}
+                  >
+                    <img
+                      onClick={() =>
+                        setIsCategoriesClicked(!isCategoriesClicked)
+                      }
+                      src="assets/svg/arrow-down.svg"
+                      alt="arrow down"
+                    />
+                  </div>
+                  {isCategoriesClicked && (
+                    <ul className="category-list">
+                      {categoriesData.data.map((item) => (
+                        <li
+                          onClick={() =>
+                            handleCategoryClick(item.title, item.id)
+                          }
+                          key={item.id}
+                          className="category-list__item"
+                          style={{
+                            color: item.text_color,
+                            background: item.background_color,
+                          }}
+                        >
+                          {item.title}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="email-container">
+              <label>ელ-ფოსტა *</label>
+              <input
+                type="text"
+                placeholder="Example@redberry.ge"
+                {...register("email", {
+                  required: true,
+                  validate: validateEmail,
+                })}
+                className={`${errors.email && "error"} ${
+                  isEmailFocused && !errors.email && "success"
+                }`}
+                onFocus={() => setIsEmailFocused(true)}
+              />
+              {errors.email?.message && (
+                <div className="email-error">
+                  <img src="assets/svg/error-circle.svg" alt="" />
+                  <p>{errors.email?.message}</p>
+                </div>
+              )}
+            </div>
+            <div className="submit-button">
+              <button type="submit">გამოქვეყნება</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+      <div className="arrow-container">
+        <img src="assets/svg/arrow-left2.svg" alt="" />
+      </div>
+    </>
   );
 };
