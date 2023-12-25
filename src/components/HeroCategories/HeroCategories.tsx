@@ -13,7 +13,15 @@ export type TCategory = {
   ];
 };
 
-export const HeroCategories = () => {
+type TCategoryProps = {
+  activeCategories: string[];
+  setActiveCategories: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export const HeroCategories = ({
+  activeCategories,
+  setActiveCategories,
+}: TCategoryProps) => {
   const url = "https://api.blog.redberryinternship.ge/api/categories";
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
@@ -35,12 +43,41 @@ export const HeroCategories = () => {
     initialCategoriesData
   );
 
+  const handleCategoryAdd = (title: string) => {
+    let updatedCategories: string[];
+    if (!activeCategories.includes(title)) {
+      updatedCategories = [...activeCategories, title];
+    } else {
+      updatedCategories = activeCategories.filter((item) => item !== title);
+    }
+
+    setActiveCategories(updatedCategories);
+
+    localStorage.setItem("activeCategories", JSON.stringify(updatedCategories));
+  };
+
+  useEffect(() => {
+    const storedCategories = localStorage.getItem("activeCategories");
+    if (storedCategories) {
+      setActiveCategories(JSON.parse(storedCategories));
+    }
+  }, []);
 
   return (
     <div className="heroCategories-wrapper">
       <div className="heroCategories">
         {categoriesData.data.map((item) => (
-          <button key={item.id} className="heroCategories__button" style={{color: item.text_color, backgroundColor: item.background_color}}>
+          <button
+            key={item.id}
+            onClick={() => handleCategoryAdd(item.title)}
+            className={`heroCategories__button ${
+              activeCategories.includes(item.title) ? "active" : ""
+            }`}
+            style={{
+              color: item.text_color,
+              backgroundColor: item.background_color,
+            }}
+          >
             {item.title}
           </button>
         ))}
