@@ -28,6 +28,7 @@ export const AddBlog2 = () => {
     setError,
     clearErrors,
     trigger,
+    control
   } = useForm<TBlogForm>({
     defaultValues: {
       author: "",
@@ -116,7 +117,6 @@ export const AddBlog2 = () => {
     register("categories", {required: true});
   }, [register]);
 
-  console.log(errors)
 
   return (
     <div className="addBlog-wrapper">
@@ -197,21 +197,21 @@ export const AddBlog2 = () => {
                 <div className="calendar__icon">
                   <img src="assets/svg/calendar.svg" alt="calendar" />
                 </div>
-                {/* <Controller
+                <Controller
                   name="publish_date"
                   control={control}
                   defaultValue={new Date()}
                   render={({ field }) => (
                     <DatePicker
-                      // {...register("publish_date", { required: true })}
+                      {...register("publish_date", { required: true })}
                       dateFormat="dd-MM-yyyy"
                       selected={field.value}
                       // onChange={(date: Date) => field.onChange(date)}
-                      onChange={(date: Date) => setValue("publish_date", date)}
-                      className={errors.publish_date && "error"}
+                      onChange={(date: Date) => {setValue("publish_date", date); trigger()}}
+                      className={errors.publish_date ? "error" : ""}
                     />
                   )}
-                /> */}
+                />
               </div>
             </div>
             <div className="category-container">
