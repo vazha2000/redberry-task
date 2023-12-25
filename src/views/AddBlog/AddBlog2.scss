@@ -46,6 +46,10 @@
           @include centerContainer(column);
           gap: 24px;
 
+          &.error {
+            border: 1px solid red;
+          }
+
           > div:nth-child(2) {
             p {
               color: $text-primary-color;

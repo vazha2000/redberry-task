@@ -28,7 +28,7 @@ export const AddBlog2 = () => {
     setError,
     clearErrors,
     trigger,
-    control
+    control,
   } = useForm<TBlogForm>({
     defaultValues: {
       author: "",
@@ -36,6 +36,7 @@ export const AddBlog2 = () => {
       description: "",
       categories: [],
       email: "",
+      // image: ""
     },
   });
   const handleTextClick = () => {
@@ -108,13 +109,24 @@ export const AddBlog2 = () => {
       background: category?.background_color,
     };
   };
-  
-  const handleDataSubmit = async (data: TBlogForm) => {
-    
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setValue("image", selectedFile);
+        trigger()
+      };
+      reader.readAsDataURL(selectedFile);
+    }
   };
-    
+
+  const handleDataSubmit = async (data: TBlogForm) => {};
+
   useEffect(() => {
-    register("categories", {required: true});
+    register("categories", { required: true });
+    register("image", { required: true });
   }, [register]);
 
 
@@ -128,7 +140,7 @@ export const AddBlog2 = () => {
         >
           <div className="upload-container">
             <label>ატვირთეთ ფოტო</label>
-            <div className="upload">
+            <div className={`upload ${errors.image ? "error" : ""}`}>
               <div style={{ display: "flex" }}>
                 <img src="assets/svg/folder-add.svg" alt="add file" />
               </div>
@@ -147,6 +159,7 @@ export const AddBlog2 = () => {
                   type="file"
                   accept="image/*"
                   style={{ display: "none" }}
+                  onChange={handleFileChange}
                 />
               </div>
             </div>
@@ -155,7 +168,7 @@ export const AddBlog2 = () => {
             <div className="author">
               <label>ავტორი *</label>
               <input
-                {...register("author", {required: true})}
+                {...register("author", { required: true })}
                 type="text"
                 placeholder="შეიყვანეთ ავტორი"
                 className={errors.author ? "error" : ""}
@@ -169,7 +182,7 @@ export const AddBlog2 = () => {
             <div className="title">
               <label>სათაური *</label>
               <input
-                {...register("title", {required: true})}
+                {...register("title", { required: true })}
                 type="text"
                 placeholder="შეიყვანეთ სათაური"
                 className={errors.title ? "error" : ""}
@@ -186,7 +199,7 @@ export const AddBlog2 = () => {
               className={`description-content ${
                 errors.description ? "error" : ""
               }`}
-              {...register("description", {required: true})}
+              {...register("description", { required: true })}
             ></textarea>
             <p>მინიმუმ 4 სიმბოლო</p>
           </div>
@@ -206,8 +219,12 @@ export const AddBlog2 = () => {
                       {...register("publish_date", { required: true })}
                       dateFormat="dd-MM-yyyy"
                       selected={field.value}
+                      autoComplete="off"
                       // onChange={(date: Date) => field.onChange(date)}
-                      onChange={(date: Date) => {setValue("publish_date", date); trigger()}}
+                      onChange={(date: Date) => {
+                        setValue("publish_date", date);
+                        trigger();
+                      }}
                       className={errors.publish_date ? "error" : ""}
                     />
                   )}
@@ -270,7 +287,7 @@ export const AddBlog2 = () => {
             <input
               type="text"
               placeholder="Example@redberry.ge"
-              {...register("email", {required: true})}
+              {...register("email")}
               className={errors.email ? "error" : ""}
             />
           </div>
