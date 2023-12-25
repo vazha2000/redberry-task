@@ -130,6 +130,7 @@ export const AddBlog2 = () => {
 
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
+  const [isTitleFocused, setIsTitleFocused] = useState(false);
 
   const validateAuthor = (value: string) => {
     const words = value.trim().split(/\s+/);
@@ -152,7 +153,13 @@ export const AddBlog2 = () => {
       trigger("author");
     }
   }, [authorValue, isAuthorFocused, trigger]);
-  console.log(errors)
+  const titleValue = watch("title");
+  useEffect(() => {
+    if (isTitleFocused) {
+      trigger("title");
+    }
+  }, [titleValue, isTitleFocused, trigger]);
+  console.log(errors);
 
   return (
     <div className="addBlog-wrapper">
@@ -197,7 +204,9 @@ export const AddBlog2 = () => {
                 type="text"
                 placeholder="შეიყვანეთ ავტორი"
                 className={`${errors.author && "error"} ${
-                  !authorErrors.includes(false) && authorErrors.length !== 0 && "success"
+                  !authorErrors.includes(false) &&
+                  authorErrors.length !== 0 &&
+                  "success"
                 }`}
                 onFocus={() => {
                   setIsAuthorFocused(true);
@@ -230,13 +239,22 @@ export const AddBlog2 = () => {
             <div className="title">
               <label>სათაური *</label>
               <input
-                {...register("title", { required: true })}
+                {...register("title", { required: true, minLength: 2 })}
                 type="text"
                 placeholder="შეიყვანეთ სათაური"
-                className={errors.title ? "error" : ""}
+                className={`${errors.title && "error"} ${
+                  isTitleFocused && !errors.title && "success"
+                }`}
+                onFocus={() => setIsTitleFocused(true)}
               />
-              <ul>
-                <li>მინიმუმ ორი სიმბოლო</li>
+              <ul className="title__list">
+                <li
+                  className={`title__list__item ${
+                    isTitleFocused ? (errors.title ? "error" : "success") : ""
+                  }`}
+                >
+                  მინიმუმ ორი სიმბოლო
+                </li>
               </ul>
             </div>
           </div>
