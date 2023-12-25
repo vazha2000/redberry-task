@@ -12,6 +12,10 @@
     justify-content: space-between;
     height: inherit;
 
+    &.blog {
+      justify-content: center;
+    }
+
     &__logo {
       width: 150px;
       height: 24px;
