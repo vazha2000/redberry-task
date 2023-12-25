@@ -126,7 +126,6 @@ export const AddBlog2 = () => {
 
   useEffect(() => {
     register("categories", { required: true });
-    register("image", { required: true });
   }, [register]);
 
 
@@ -155,6 +154,7 @@ export const AddBlog2 = () => {
                   </span>
                 </p>
                 <input
+                  {...register("image", {required: true})}
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
