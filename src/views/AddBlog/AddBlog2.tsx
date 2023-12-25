@@ -131,6 +131,7 @@ export const AddBlog2 = () => {
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
 
   const validateAuthor = (value: string) => {
     const words = value.trim().split(/\s+/);
@@ -146,6 +147,10 @@ export const AddBlog2 = () => {
       return true;
     }
   };
+  const validateEmail = (value: string) => {
+    const isValidEmail = /^[a-zA-Z0-9._-]+@redberry\.ge$/.test(value);
+    return isValidEmail || "მეილი უნდა მთავრდებოდეს @redberry.ge-ით";
+  };
 
   const authorValue = watch("author");
   useEffect(() => {
@@ -159,7 +164,13 @@ export const AddBlog2 = () => {
       trigger("title");
     }
   }, [titleValue, isTitleFocused, trigger]);
-  console.log(errors);
+
+  const emailValue = watch("email");
+  useEffect(() => {
+    if (isEmailFocused) {
+      trigger("email");
+    }
+  }, [emailValue, isEmailFocused, trigger]);
 
   return (
     <div className="addBlog-wrapper">
@@ -353,9 +364,21 @@ export const AddBlog2 = () => {
             <input
               type="text"
               placeholder="Example@redberry.ge"
-              {...register("email")}
-              className={errors.email ? "error" : ""}
+              {...register("email", {
+                required: true,
+                validate: validateEmail,
+              })}
+              className={`${errors.email && "error"} ${
+                isEmailFocused && !errors.email && "success"
+              }`}
+              onFocus={() => setIsEmailFocused(true)}
             />
+            {errors.email?.message && <div className="email-error">
+              
+              <img src="assets/svg/error-circle.svg" alt="" />
+              <p>{errors.email?.message}</p>
+            </div>}
+            
           </div>
           <div className="submit-button">
             <button type="submit">გამოქვეყნება</button>
