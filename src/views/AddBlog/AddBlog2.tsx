@@ -116,7 +116,7 @@ export const AddBlog2 = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setValue("image", selectedFile);
-        trigger()
+        trigger();
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -128,6 +128,31 @@ export const AddBlog2 = () => {
     register("categories", { required: true });
   }, [register]);
 
+  const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
+  const [isAuthorFocused, setIsAuthorFocused] = useState(false);
+
+  const validateAuthor = (value: string) => {
+    const words = value.trim().split(/\s+/);
+    const hasMinimumWords = words.length >= 2;
+    const hasMinimumFourChars = value.trim().length >= 4;
+    const georgianSymbols = /^[ა-ჰ\s]*$/.test(value) && value.length > 0;
+
+    setAuthorErrors([hasMinimumFourChars, hasMinimumWords, georgianSymbols]);
+
+    if (!hasMinimumWords || !hasMinimumFourChars || !georgianSymbols) {
+      return "";
+    } else {
+      return true;
+    }
+  };
+
+  const authorValue = watch("author");
+  useEffect(() => {
+    if (isAuthorFocused) {
+      trigger("author");
+    }
+  }, [authorValue, isAuthorFocused, trigger]);
+  console.log(errors)
 
   return (
     <div className="addBlog-wrapper">
@@ -154,7 +179,7 @@ export const AddBlog2 = () => {
                   </span>
                 </p>
                 <input
-                  {...register("image", {required: true})}
+                  {...register("image", { required: true })}
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
@@ -168,15 +193,38 @@ export const AddBlog2 = () => {
             <div className="author">
               <label>ავტორი *</label>
               <input
-                {...register("author", { required: true })}
+                {...register("author", { validate: validateAuthor })}
                 type="text"
                 placeholder="შეიყვანეთ ავტორი"
-                className={errors.author ? "error" : ""}
+                className={`${errors.author && "error"} ${
+                  !authorErrors.includes(false) && authorErrors.length !== 0 && "success"
+                }`}
+                onFocus={() => {
+                  setIsAuthorFocused(true);
+                }}
               />
               <ul className="author__list">
-                <li>მინიმუმ 4 სიმბოლო</li>
-                <li>მინიმუმ ორი სიტყვა</li>
-                <li>მხოლოდ ქართული სიმბოლოები</li>
+                <li
+                  className={`author__list__item ${
+                    authorErrors[0] === false && "error"
+                  } ${authorErrors[0] === true && "success"}`}
+                >
+                  მინიმუმ 4 სიმბოლო
+                </li>
+                <li
+                  className={`author__list__item ${
+                    authorErrors[1] === false && "error"
+                  } ${authorErrors[1] === true && "success"}`}
+                >
+                  მინიმუმ ორი სიტყვა
+                </li>
+                <li
+                  className={`author__list__item ${
+                    authorErrors[2] === false && "error"
+                  } ${authorErrors[2] === true && "success"}`}
+                >
+                  მხოლოდ ქართული სიმბოლოები
+                </li>
               </ul>
             </div>
             <div className="title">
