@@ -109,6 +109,8 @@ export const AddBlog2 = () => {
       background: category?.background_color,
     };
   };
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
@@ -116,6 +118,7 @@ export const AddBlog2 = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setValue("image", selectedFile);
+        setIsImageUploaded(true);
         trigger();
       };
       reader.readAsDataURL(selectedFile);
@@ -132,6 +135,7 @@ export const AddBlog2 = () => {
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
   const validateAuthor = (value: string) => {
     const words = value.trim().split(/\s+/);
@@ -171,6 +175,12 @@ export const AddBlog2 = () => {
       trigger("email");
     }
   }, [emailValue, isEmailFocused, trigger]);
+  const descriptionValue = watch("description");
+  useEffect(() => {
+    if (isDescriptionFocused) {
+      trigger("description");
+    }
+  }, [descriptionValue, isDescriptionFocused, trigger]);
 
   return (
     <div className="addBlog-wrapper">
@@ -274,11 +284,22 @@ export const AddBlog2 = () => {
             <textarea
               placeholder="შეიყვანეთ აღწერა"
               className={`description-content ${
-                errors.description ? "error" : ""
-              }`}
-              {...register("description", { required: true })}
+                errors.description && "error"
+              } ${isDescriptionFocused && !errors.description && "success"}`}
+              {...register("description", { required: true, minLength: 4 })}
+              onFocus={() => setIsDescriptionFocused(true)}
             ></textarea>
-            <p>მინიმუმ 4 სიმბოლო</p>
+            <p
+              className={`description-validation ${
+                isDescriptionFocused
+                  ? errors.description
+                    ? "error"
+                    : "success"
+                  : ""
+              }`}
+            >
+              მინიმუმ 4 სიმბოლო
+            </p>
           </div>
           <div className="calendarCategory">
             <div className="calendar-container">
@@ -373,12 +394,12 @@ export const AddBlog2 = () => {
               }`}
               onFocus={() => setIsEmailFocused(true)}
             />
-            {errors.email?.message && <div className="email-error">
-              
-              <img src="assets/svg/error-circle.svg" alt="" />
-              <p>{errors.email?.message}</p>
-            </div>}
-            
+            {errors.email?.message && (
+              <div className="email-error">
+                <img src="assets/svg/error-circle.svg" alt="" />
+                <p>{errors.email?.message}</p>
+              </div>
+            )}
           </div>
           <div className="submit-button">
             <button type="submit">გამოქვეყნება</button>

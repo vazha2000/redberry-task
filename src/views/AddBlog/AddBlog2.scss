@@ -47,7 +47,7 @@
           gap: 24px;
 
           &.error {
-            border: 1px solid red;
+            border: 1px dashed red;
           }
 
           > div:nth-child(2) {
@@ -152,13 +152,24 @@
             border: 1px solid $text-danger;
             background: #faf2f3;
           }
+          &.success {
+            border: 1px solid #14d81c;
+          }
         }
 
-        p {
+        .description-validation {
           color: #85858d;
           font-size: 12px;
           font-weight: 400;
           line-height: 20px;
+          margin-top: 8px;
+
+          &.error {
+            color: #ea1919;
+          }
+          &.success {
+            color: #14d81c;
+          }
         }
       }
 
