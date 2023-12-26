@@ -7,6 +7,8 @@ import { useFetch } from "../../utils/useFetch";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { Navbar } from "../../components/Navbar";
+import { SuccessPost } from "../../components/Modals/SuccessPost";
+import { Overlay } from "../../components/Overlay";
 
 export type TBlogForm = {
   author: string;
@@ -30,6 +32,7 @@ export const AddBlog2 = () => {
     clearErrors,
     trigger,
     control,
+    reset,
   } = useForm<TBlogForm>({
     defaultValues: {
       author: "",
@@ -126,8 +129,6 @@ export const AddBlog2 = () => {
     }
   };
 
-  const handleDataSubmit = async (data: TBlogForm) => {};
-
   useEffect(() => {
     register("categories", { required: true });
   }, [register]);
@@ -183,10 +184,41 @@ export const AddBlog2 = () => {
     }
   }, [descriptionValue, isDescriptionFocused, trigger]);
 
+  const [postSuccess, setPostSuccess] = useState(false);
+
+  const handleDataSubmit = async (data: TBlogForm) => {
+    const categoryIdsAsString = data.categories.map((category) => category.id);
+    const formattedDate = data.publish_date.toISOString().split("T")[0];
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("publish_date", formattedDate);
+    formData.append("categories", `[${categoryIdsAsString}]`);
+    formData.append("description", data.description);
+    formData.append("email", data.email);
+    formData.append("image", data.image);
+
+    try {
+      await axios.post(
+        "https://api.blog.redberryinternship.ge/api/blogs",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPostSuccess(true);
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="addBlog-wrapper">
         <div className="addBlog">
           <h1>ბლოგის დამატება</h1>
@@ -418,6 +450,12 @@ export const AddBlog2 = () => {
       <div className="arrow-container">
         <img src="assets/svg/arrow-left2.svg" alt="" />
       </div>
+      {postSuccess && (
+        <>
+          <Overlay />
+          <SuccessPost setPostSuccess={setPostSuccess} />
+        </>
+      )}
     </>
   );
 };
