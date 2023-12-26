@@ -33,6 +33,7 @@ export const AddBlog2 = () => {
     trigger,
     control,
     reset,
+    getValues
   } = useForm<TBlogForm>({
     defaultValues: {
       author: "",
@@ -124,7 +125,7 @@ export const AddBlog2 = () => {
         setValue("image", selectedFile);
         setIsImageUploaded(true);
         setImageName(selectedFile.name);
-        trigger();
+        // trigger();
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -392,11 +393,11 @@ export const AddBlog2 = () => {
                     errors.categories ? "error" : ""
                   }`}
                 >
-                  {pickedCategories.length === 0 && (
+                  {getValues().categories.length === 0 && (
                     <span>აირჩიეთ კატეგორია</span>
                   )}
                   <ul className="picked-category-list">
-                    {pickedCategories.map((picked, index) => (
+                    {getValues().categories.map((picked, index) => (
                       <div key={index} style={getColorStyles(picked.title)}>
                         <li key={index} className="picked-category-list__item">
                           {picked.title}
