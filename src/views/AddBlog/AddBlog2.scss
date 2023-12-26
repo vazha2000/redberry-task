@@ -38,6 +38,32 @@
       .upload-container {
         display: flex;
         flex-direction: column;
+        .uploaded {
+          padding: 16px;
+          border-radius: 12px;
+          background: #f2f2fa;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .galleryImageName {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            span {
+              color: $text-primary-color;
+              font-size: 14px;
+              font-weight: 400;
+              line-height: 20px;
+            }
+          }
+
+          .remove {
+            display: flex;
+            cursor: pointer;
+          }
+        }
         .upload {
           height: 180px;
           border-radius: 12px;

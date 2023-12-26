@@ -17,7 +17,7 @@ export type TBlogForm = {
   publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
-  image: File;
+  image: File | null;
 };
 export const AddBlog2 = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -114,7 +114,7 @@ export const AddBlog2 = () => {
     };
   };
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-
+  const [imageName, setImageName] = useState("");
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
@@ -123,6 +123,7 @@ export const AddBlog2 = () => {
       reader.onloadend = () => {
         setValue("image", selectedFile);
         setIsImageUploaded(true);
+        setImageName(selectedFile.name);
         trigger();
       };
       reader.readAsDataURL(selectedFile);
@@ -197,7 +198,7 @@ export const AddBlog2 = () => {
     formData.append("categories", `[${categoryIdsAsString}]`);
     formData.append("description", data.description);
     formData.append("email", data.email);
-    formData.append("image", data.image);
+    formData.append("image", data.image!);
 
     try {
       await axios.post(
@@ -216,6 +217,12 @@ export const AddBlog2 = () => {
     }
   };
 
+  const handleRemoveImage = () => {
+    setValue("image", null);
+    setIsImageUploaded(false);
+    setImageName("");
+  };
+
   return (
     <>
       <Navbar />
@@ -228,30 +235,42 @@ export const AddBlog2 = () => {
           >
             <div className="upload-container">
               <label>ატვირთეთ ფოტო</label>
-              <div className={`upload ${errors.image ? "error" : ""}`}>
-                <div style={{ display: "flex" }}>
-                  <img src="assets/svg/folder-add.svg" alt="add file" />
+              {isImageUploaded ? (
+                <div className="uploaded">
+                  <div className="galleryImageName">
+                    <img src="assets/svg/gallery.svg" />
+                    <span>{imageName}</span>
+                  </div>
+                  <div className="remove" onClick={handleRemoveImage}>
+                    <img src="assets/svg/add.svg" alt="" />
+                  </div>
                 </div>
-                <div>
-                  <p>
-                    ჩააგდეთ ფაილი აქ ან{" "}
-                    <span
-                      style={{ textDecoration: "underline" }}
-                      onClick={handleTextClick}
-                    >
-                      აირჩიეთ ფაილი
-                    </span>
-                  </p>
-                  <input
-                    {...register("image", { required: true })}
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
+              ) : (
+                <div className={`upload ${errors.image ? "error" : ""}`}>
+                  <div style={{ display: "flex" }}>
+                    <img src="assets/svg/folder-add.svg" alt="add file" />
+                  </div>
+                  <div>
+                    <p>
+                      ჩააგდეთ ფაილი აქ ან{" "}
+                      <span
+                        style={{ textDecoration: "underline" }}
+                        onClick={handleTextClick}
+                      >
+                        აირჩიეთ ფაილი
+                      </span>
+                    </p>
+                    <input
+                      {...register("image", { required: true })}
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="titleAuthor-container">
               <div className="author">
