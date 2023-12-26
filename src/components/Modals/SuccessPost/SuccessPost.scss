@@ -1,0 +1,46 @@
+@import "../SuccessAuth/SuccessAuth.scss";
+@import "../../../styles/variables";
+
+.successPost-wrapper {
+  @extend .successPost-wrapper;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  width: 480px;
+  min-height: 272px;
+  z-index: 6;
+  text-align: center;
+
+  .successPost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .success-icon {
+      margin-bottom: 16px;
+    }
+  }
+  h3 {
+    color: $text-primary-color;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px;
+    margin-bottom: 48px
+  }
+
+  button {
+    @include buttonStyle;
+    width: 100%;
+  }
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+}
