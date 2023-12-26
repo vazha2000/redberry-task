@@ -5,12 +5,21 @@
   padding: 0 76px;
   background-color: #fff;
   border-bottom: 1px solid #e4e3eb;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
 
   .navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: inherit;
+
+    &.blog {
+      justify-content: center;
+    }
 
     &__logo {
       width: 150px;

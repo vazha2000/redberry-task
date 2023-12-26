@@ -39,13 +39,22 @@
     color: #85858d;
   }
 
+
+
   &.error {
     border: 1px solid $text-danger;
     background: #faf2f3;
 
-    // &:focus {
-    //   border: 1px solid $text-danger;
-    // }
+    &:focus {
+      border: 1px solid $text-danger;
+    }
+  }
+  &.success {
+    border: 1px solid #14d81c;
+
+    &:focus {
+      border: 1px solid #14d81c;
+    }
   }
 
   &:focus {
