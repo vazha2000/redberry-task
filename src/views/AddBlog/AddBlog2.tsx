@@ -9,6 +9,7 @@ import axios from "axios";
 import { Navbar } from "../../components/Navbar";
 import { SuccessPost } from "../../components/Modals/SuccessPost";
 import { Overlay } from "../../components/Overlay";
+import { Link } from "react-router-dom";
 
 export type TBlogForm = {
   author: string;
@@ -31,8 +32,13 @@ export const AddBlog2 = () => {
     imageBlob = dataURLtoBlob(storedFormData.image);
   }
   let parsedDate;
-  if(JSON.parse(localStorage.getItem("blogFormData")!)?.publish_date !== undefined) {
-    parsedDate = new Date(JSON.parse(localStorage.getItem("blogFormData")!).publish_date)
+  if (
+    JSON.parse(localStorage.getItem("blogFormData")!)?.publish_date !==
+    undefined
+  ) {
+    parsedDate = new Date(
+      JSON.parse(localStorage.getItem("blogFormData")!).publish_date
+    );
   }
   const {
     handleSubmit,
@@ -50,11 +56,12 @@ export const AddBlog2 = () => {
     defaultValues: {
       author: JSON.parse(localStorage.getItem("blogFormData")!)?.author,
       title: JSON.parse(localStorage.getItem("blogFormData")!)?.title,
-      description: JSON.parse(localStorage.getItem("blogFormData")!)?.description,
+      description: JSON.parse(localStorage.getItem("blogFormData")!)
+        ?.description,
       categories: JSON.parse(localStorage.getItem("blogFormData")!)?.categories,
       email: JSON.parse(localStorage.getItem("blogFormData")!)?.email,
       image: imageBlob,
-      publish_date: parsedDate
+      publish_date: parsedDate,
     },
   });
   const handleTextClick = () => {
@@ -168,7 +175,7 @@ export const AddBlog2 = () => {
         setValue("image", selectedFile);
         setIsImageUploaded(true);
         // setImageName(selectedFile.name);
-        localStorage.setItem("imageName", selectedFile.name)
+        localStorage.setItem("imageName", selectedFile.name);
         // trigger();
       };
       reader.readAsDataURL(selectedFile);
@@ -176,11 +183,10 @@ export const AddBlog2 = () => {
   };
   useEffect(() => {
     register("categories", { required: true });
-    if(storedFormData.categories === undefined) {
+    if (storedFormData.categories === undefined) {
       setValue("categories", []);
     }
   }, [register, setValue]);
-
 
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
@@ -236,7 +242,9 @@ export const AddBlog2 = () => {
   const [postSuccess, setPostSuccess] = useState(false);
 
   const handleDataSubmit = async () => {
-    const categoryIdsAsString = watch().categories.map((category) => category.id);
+    const categoryIdsAsString = watch().categories.map(
+      (category) => category.id
+    );
     const formattedDate = watch().publish_date.toISOString().split("T")[0];
 
     const formData = new FormData();
@@ -268,8 +276,8 @@ export const AddBlog2 = () => {
   const handleRemoveImage = () => {
     setValue("image", null);
     setIsImageUploaded(false);
-    localStorage.removeItem("imageName")
-    trigger()
+    localStorage.removeItem("imageName");
+    trigger();
   };
 
   return (
@@ -288,7 +296,7 @@ export const AddBlog2 = () => {
                 <div className="uploaded">
                   <div className="galleryImageName">
                     <img src="assets/svg/gallery.svg" />
-                    <span>{(localStorage.getItem("imageName")!)}</span>
+                    <span>{localStorage.getItem("imageName")!}</span>
                   </div>
                   <div className="remove" onClick={handleRemoveImage}>
                     <img src="assets/svg/add.svg" alt="" />
@@ -527,9 +535,12 @@ export const AddBlog2 = () => {
           </form>
         </div>
       </div>
-      <div className="arrow-container">
-        <img src="assets/svg/arrow-left2.svg" alt="" />
-      </div>
+      <Link to="/">
+        <div className="arrow-container">
+          <img src="assets/svg/arrow-left2.svg" alt="arrow left" />
+        </div>
+      </Link>
+
       {postSuccess && (
         <>
           <Overlay />
