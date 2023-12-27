@@ -14,14 +14,20 @@ export type TBlogForm = {
   author: string;
   title: string;
   description: string;
-  publish_date: Date;
+  // publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
-  image: File | null;
+  image: Blob | null;
 };
 export const AddBlog2 = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCategoriesClicked, setIsCategoriesClicked] = useState(false);
+  const storedFormData = JSON.parse(localStorage.getItem("blogFormData") || "{}");
+
+  let imageBlob;
+if (storedFormData.image) {
+  imageBlob = dataURLtoBlob(storedFormData.image);
+}
   const {
     handleSubmit,
     register,
@@ -33,15 +39,15 @@ export const AddBlog2 = () => {
     trigger,
     control,
     reset,
-    getValues
+    getValues,
   } = useForm<TBlogForm>({
     defaultValues: {
-      author: "",
-      title: "",
-      description: "",
-      categories: [],
-      email: "",
-      // image: ""
+      author: JSON.parse(localStorage.getItem("blogFormData")!).author,
+      title: JSON.parse(localStorage.getItem("blogFormData")!).title,
+      description: JSON.parse(localStorage.getItem("blogFormData")!).description,
+      categories: JSON.parse(localStorage.getItem("blogFormData")!).categories,
+      email: JSON.parse(localStorage.getItem("blogFormData")!).email,
+      image: imageBlob
     },
   });
   const handleTextClick = () => {
@@ -116,13 +122,54 @@ export const AddBlog2 = () => {
   };
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [imageName, setImageName] = useState("");
+  const watchedValues = watch();
+
+  // useEffect(() => {
+  //   const formDataToSave = {
+  //     ...watchedValues,
+  //     image: watchedValues.image ? URL.createObjectURL(watchedValues.image) : null,
+  //     // publish_date: watchedValues.publish_date.toISOString().split("T")[0]
+  //     // publish_date: watchedValues.publish_date ? watchedValues.publish_date.toISOString().split("T")[0] : ""
+  //   };
+  //   localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+  // }, [watchedValues]);
+
+  function dataURLtoBlob(dataURL: string) {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)![1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+useEffect(() => {
+  const formDataToSave = { ...watchedValues };
+  
+  if (watchedValues.image) {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+      formDataToSave.image = reader.result;
+      localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+    };
+    reader.readAsDataURL(watchedValues.image);
+  } else {
+    localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+  }
+}, [watchedValues]);
+
+
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setValue("image", selectedFile);
+        setValue("image", selectedFile || storedFormData.image);
         setIsImageUploaded(true);
         setImageName(selectedFile.name);
         // trigger();
@@ -190,16 +237,18 @@ export const AddBlog2 = () => {
 
   const handleDataSubmit = async (data: TBlogForm) => {
     const categoryIdsAsString = data.categories.map((category) => category.id);
-    const formattedDate = data.publish_date.toISOString().split("T")[0];
+    // const formattedDate = data.publish_date.toISOString().split("T")[0];
 
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("author", data.author);
-    formData.append("publish_date", formattedDate);
+    // formData.append("publish_date", formattedDate);
     formData.append("categories", `[${categoryIdsAsString}]`);
     formData.append("description", data.description);
     formData.append("email", data.email);
     formData.append("image", data.image!);
+    // console.log(data)
+    // console.log(storedFormData)
 
     try {
       await axios.post(
@@ -230,6 +279,7 @@ export const AddBlog2 = () => {
       <div className="addBlog-wrapper">
         <div className="addBlog">
           <h1>ბლოგის დამატება</h1>
+          <img src={storedFormData.image} alt="" />
           <form
             onSubmit={handleSubmit(handleDataSubmit)}
             className="addBlog__form"
@@ -364,7 +414,7 @@ export const AddBlog2 = () => {
                   <div className="calendar__icon">
                     <img src="assets/svg/calendar.svg" alt="calendar" />
                   </div>
-                  <Controller
+                  {/* <Controller
                     name="publish_date"
                     control={control}
                     defaultValue={new Date()}
@@ -382,7 +432,7 @@ export const AddBlog2 = () => {
                         className={errors.publish_date ? "error" : ""}
                       />
                     )}
-                  />
+                  /> */}
                 </div>
               </div>
               <div className="category-container">
