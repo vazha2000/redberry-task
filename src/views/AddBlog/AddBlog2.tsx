@@ -128,7 +128,7 @@ export const AddBlog2 = () => {
     };
   };
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const [imageName, setImageName] = useState("");
+  // const [imageName, setImageName] = useState("");
   const watchedValues = watch();
 
   function dataURLtoBlob(dataURL: string) {
@@ -167,7 +167,8 @@ export const AddBlog2 = () => {
         // setValue("image", selectedFile || storedFormData.image);
         setValue("image", selectedFile);
         setIsImageUploaded(true);
-        setImageName(selectedFile.name);
+        // setImageName(selectedFile.name);
+        localStorage.setItem("imageName", selectedFile.name)
         // trigger();
       };
       reader.readAsDataURL(selectedFile);
@@ -267,9 +268,9 @@ export const AddBlog2 = () => {
   const handleRemoveImage = () => {
     setValue("image", null);
     setIsImageUploaded(false);
-    setImageName("");
+    localStorage.removeItem("imageName")
+    trigger()
   };
-
 
   return (
     <>
@@ -277,18 +278,17 @@ export const AddBlog2 = () => {
       <div className="addBlog-wrapper">
         <div className="addBlog">
           <h1>ბლოგის დამატება</h1>
-          {/* <img src={storedFormData.image} alt="" /> */}
           <form
             onSubmit={handleSubmit(handleDataSubmit)}
             className="addBlog__form"
           >
             <div className="upload-container">
               <label>ატვირთეთ ფოტო</label>
-              {isImageUploaded ? (
+              {isImageUploaded || storedFormData.image ? (
                 <div className="uploaded">
                   <div className="galleryImageName">
                     <img src="assets/svg/gallery.svg" />
-                    <span>{imageName}</span>
+                    <span>{(localStorage.getItem("imageName")!)}</span>
                   </div>
                   <div className="remove" onClick={handleRemoveImage}>
                     <img src="assets/svg/add.svg" alt="" />
