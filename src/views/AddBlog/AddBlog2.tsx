@@ -234,7 +234,7 @@ export const AddBlog2 = () => {
 
   const [postSuccess, setPostSuccess] = useState(false);
 
-  const handleDataSubmit = async (data: TBlogForm) => {
+  const handleDataSubmit = async () => {
     const categoryIdsAsString = watch().categories.map((category) => category.id);
     const formattedDate = watch().publish_date.toISOString().split("T")[0];
 
@@ -270,7 +270,6 @@ export const AddBlog2 = () => {
     setImageName("");
   };
 
-  console.log(watch())
 
   return (
     <>
