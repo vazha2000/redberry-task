@@ -52,15 +52,15 @@ export const HeroBlogs = ({activeCategories}:THeroBlogsProps) => {
 
   const localCategories = localStorage.getItem("activeCategories");
   const parsedCategories = JSON.parse(localCategories!);
+  const currentDate = new Date().toISOString().split('T')[0]
 
   const filteredBlogs = blogData?.data.filter((blog) =>
     blog.categories.some((blogCategory) =>
       parsedCategories?.some(
         (selectedCategory:string) => selectedCategory === blogCategory.title
       )
-    )
+    ) && blog.publish_date <= currentDate
   );
-
   const blogsToRender = activeCategories.length > 0 ? filteredBlogs : blogData?.data;
 
   return (

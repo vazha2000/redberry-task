@@ -45,13 +45,13 @@ export const SimilarBlogs = ({ categories, id }: TSimilarBlogsProps) => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  const currentDate = new Date().toISOString().split('T')[0]
   const filteredBlogs = blogData?.data.filter((blog) =>
     blog.categories.some((blogCategory) =>
       categories?.some(
         (selectedCategory) => selectedCategory.title === blogCategory.title
       )
-    ) && blog.id !== parseInt(id)
+    ) && blog.id !== parseInt(id) && blog.publish_date <= currentDate
   );
 
   return (
