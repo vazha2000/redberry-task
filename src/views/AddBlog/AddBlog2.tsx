@@ -14,7 +14,7 @@ export type TBlogForm = {
   author: string;
   title: string;
   description: string;
-  // publish_date: Date;
+  publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
   image: Blob | null;
@@ -22,12 +22,18 @@ export type TBlogForm = {
 export const AddBlog2 = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCategoriesClicked, setIsCategoriesClicked] = useState(false);
-  const storedFormData = JSON.parse(localStorage.getItem("blogFormData") || "{}");
+  const storedFormData = JSON.parse(
+    localStorage.getItem("blogFormData") || "{}"
+  );
 
   let imageBlob;
-if (storedFormData.image) {
-  imageBlob = dataURLtoBlob(storedFormData.image);
-}
+  if (storedFormData.image) {
+    imageBlob = dataURLtoBlob(storedFormData.image);
+  }
+  let parsedDate;
+  if(JSON.parse(localStorage.getItem("blogFormData")!)?.publish_date !== undefined) {
+    parsedDate = new Date(JSON.parse(localStorage.getItem("blogFormData")!).publish_date)
+  }
   const {
     handleSubmit,
     register,
@@ -42,12 +48,13 @@ if (storedFormData.image) {
     getValues,
   } = useForm<TBlogForm>({
     defaultValues: {
-      author: JSON.parse(localStorage.getItem("blogFormData")!).author,
-      title: JSON.parse(localStorage.getItem("blogFormData")!).title,
-      description: JSON.parse(localStorage.getItem("blogFormData")!).description,
-      categories: JSON.parse(localStorage.getItem("blogFormData")!).categories,
-      email: JSON.parse(localStorage.getItem("blogFormData")!).email,
-      image: imageBlob
+      author: JSON.parse(localStorage.getItem("blogFormData")!)?.author,
+      title: JSON.parse(localStorage.getItem("blogFormData")!)?.title,
+      description: JSON.parse(localStorage.getItem("blogFormData")!)?.description,
+      categories: JSON.parse(localStorage.getItem("blogFormData")!)?.categories,
+      email: JSON.parse(localStorage.getItem("blogFormData")!)?.email,
+      image: imageBlob,
+      publish_date: parsedDate
     },
   });
   const handleTextClick = () => {
@@ -82,7 +89,7 @@ if (storedFormData.image) {
   >([]);
 
   const handleCategoryClick = (categoryTitle: string, categoryId: number) => {
-    const currentCategories = watch("categories") as {
+    const currentCategories = getValues().categories as {
       id: number;
       title: string;
     }[];
@@ -135,34 +142,32 @@ if (storedFormData.image) {
   // }, [watchedValues]);
 
   function dataURLtoBlob(dataURL: string) {
-  const arr = dataURL.split(',');
-  const mime = arr[0].match(/:(.*?);/)![1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   }
-  return new Blob([u8arr], { type: mime });
-}
 
-useEffect(() => {
-  const formDataToSave = { ...watchedValues };
-  
-  if (watchedValues.image) {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-      formDataToSave.image = reader.result;
+  useEffect(() => {
+    const formDataToSave = { ...watchedValues };
+
+    if (watchedValues.image) {
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        formDataToSave.image = reader.result;
+        localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+      };
+      reader.readAsDataURL(watchedValues.image);
+    } else {
       localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
-    };
-    reader.readAsDataURL(watchedValues.image);
-  } else {
-    localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
-  }
-}, [watchedValues]);
+    }
+  }, [watchedValues]);
 
-
-  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
@@ -180,7 +185,11 @@ useEffect(() => {
 
   useEffect(() => {
     register("categories", { required: true });
-  }, [register]);
+    if(storedFormData.categories === undefined) {
+      setValue("categories", []);
+    }
+  }, [register, setValue]);
+
 
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
@@ -414,7 +423,7 @@ useEffect(() => {
                   <div className="calendar__icon">
                     <img src="assets/svg/calendar.svg" alt="calendar" />
                   </div>
-                  {/* <Controller
+                  <Controller
                     name="publish_date"
                     control={control}
                     defaultValue={new Date()}
@@ -427,12 +436,12 @@ useEffect(() => {
                         // onChange={(date: Date) => field.onChange(date)}
                         onChange={(date: Date) => {
                           setValue("publish_date", date);
-                          trigger();
+                          // trigger();
                         }}
                         className={errors.publish_date ? "error" : ""}
                       />
                     )}
-                  /> */}
+                  />
                 </div>
               </div>
               <div className="category-container">
@@ -443,18 +452,30 @@ useEffect(() => {
                     errors.categories ? "error" : ""
                   }`}
                 >
-                  {getValues().categories.length === 0 && (
-                    <span>აირჩიეთ კატეგორია</span>
+                  {getValues().categories === undefined ? (
+                    <div></div>
+                  ) : (
+                    getValues().categories.length === 0 && (
+                      <span>აირჩიეთ კატეგორია</span>
+                    )
                   )}
+
                   <ul className="picked-category-list">
-                    {getValues().categories.map((picked, index) => (
-                      <div key={index} style={getColorStyles(picked.title)}>
-                        <li key={index} className="picked-category-list__item">
-                          {picked.title}
-                        </li>
-                        <img src="assets/svg/close2.svg" alt="close icon" />
-                      </div>
-                    ))}
+                    {getValues().categories === undefined ? (
+                      <div>s</div>
+                    ) : (
+                      getValues().categories.map((picked, index) => (
+                        <div key={index} style={getColorStyles(picked.title)}>
+                          <li
+                            key={index}
+                            className="picked-category-list__item"
+                          >
+                            {picked.title}
+                          </li>
+                          <img src="assets/svg/close2.svg" alt="close icon" />
+                        </div>
+                      ))
+                    )}
                   </ul>
                   <div
                     className="arrow-down"
