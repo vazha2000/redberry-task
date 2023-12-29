@@ -18,7 +18,7 @@ export type TBlogForm = {
   publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
-  image: Blob | null;
+  image: Blob | null | string;
 };
 export const AddBlog2 = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -153,10 +153,10 @@ export const AddBlog2 = () => {
     if (watchedValues.image) {
       const reader = new FileReader();
       reader.onloadend = function () {
-        formDataToSave.image = reader.result;
+        formDataToSave.image = reader.result as string;
         localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
       };
-      reader.readAsDataURL(watchedValues.image);
+      reader.readAsDataURL(watchedValues.image as Blob);
     } else {
       localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
     }
