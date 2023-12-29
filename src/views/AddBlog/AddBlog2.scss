@@ -3,7 +3,7 @@
 
 .addBlog-wrapper {
   background-color: #fbfaff;
-  margin: 113px 0 189px;
+  padding: 113px 0 189px;
   .addBlog {
     display: flex;
     flex-direction: column;
@@ -379,4 +379,6 @@
   position: absolute;
   top: 120px;
   left: 76px;
+  display: flex;
+  cursor: pointer;
 }

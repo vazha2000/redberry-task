@@ -9,6 +9,7 @@ import axios from "axios";
 import { Navbar } from "../../components/Navbar";
 import { SuccessPost } from "../../components/Modals/SuccessPost";
 import { Overlay } from "../../components/Overlay";
+import { Link } from "react-router-dom";
 
 export type TBlogForm = {
   author: string;
@@ -17,11 +18,28 @@ export type TBlogForm = {
   publish_date: Date;
   categories: { id: number; title: string }[];
   email: string;
-  image: File | null;
+  image: Blob | null;
 };
 export const AddBlog2 = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCategoriesClicked, setIsCategoriesClicked] = useState(false);
+  const storedFormData = JSON.parse(
+    localStorage.getItem("blogFormData") || "{}"
+  );
+
+  let imageBlob;
+  if (storedFormData.image) {
+    imageBlob = dataURLtoBlob(storedFormData.image);
+  }
+  let parsedDate;
+  if (
+    JSON.parse(localStorage.getItem("blogFormData")!)?.publish_date !==
+    undefined
+  ) {
+    parsedDate = new Date(
+      JSON.parse(localStorage.getItem("blogFormData")!).publish_date
+    );
+  }
   const {
     handleSubmit,
     register,
@@ -33,15 +51,17 @@ export const AddBlog2 = () => {
     trigger,
     control,
     reset,
-    getValues
+    getValues,
   } = useForm<TBlogForm>({
     defaultValues: {
-      author: "",
-      title: "",
-      description: "",
-      categories: [],
-      email: "",
-      // image: ""
+      author: JSON.parse(localStorage.getItem("blogFormData")!)?.author,
+      title: JSON.parse(localStorage.getItem("blogFormData")!)?.title,
+      description: JSON.parse(localStorage.getItem("blogFormData")!)
+        ?.description,
+      categories: JSON.parse(localStorage.getItem("blogFormData")!)?.categories,
+      email: JSON.parse(localStorage.getItem("blogFormData")!)?.email,
+      image: imageBlob,
+      publish_date: parsedDate,
     },
   });
   const handleTextClick = () => {
@@ -76,7 +96,7 @@ export const AddBlog2 = () => {
   >([]);
 
   const handleCategoryClick = (categoryTitle: string, categoryId: number) => {
-    const currentCategories = watch("categories") as {
+    const currentCategories = getValues().categories as {
       id: number;
       title: string;
     }[];
@@ -115,25 +135,58 @@ export const AddBlog2 = () => {
     };
   };
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const [imageName, setImageName] = useState("");
+  // const [imageName, setImageName] = useState("");
+  const watchedValues = watch();
+
+  function dataURLtoBlob(dataURL: string) {
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+
+  useEffect(() => {
+    const formDataToSave = { ...watchedValues };
+
+    if (watchedValues.image) {
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        formDataToSave.image = reader.result;
+        localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+      };
+      reader.readAsDataURL(watchedValues.image);
+    } else {
+      localStorage.setItem("blogFormData", JSON.stringify(formDataToSave));
+    }
+  }, [watchedValues]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
 
       const reader = new FileReader();
       reader.onloadend = () => {
+        // setValue("image", selectedFile || storedFormData.image);
         setValue("image", selectedFile);
         setIsImageUploaded(true);
-        setImageName(selectedFile.name);
+        // setImageName(selectedFile.name);
+        localStorage.setItem("imageName", selectedFile.name);
         // trigger();
       };
       reader.readAsDataURL(selectedFile);
     }
   };
-
   useEffect(() => {
     register("categories", { required: true });
-  }, [register]);
+    if (storedFormData.categories === undefined) {
+      setValue("categories", []);
+    }
+  }, [register, setValue]);
 
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
@@ -188,18 +241,20 @@ export const AddBlog2 = () => {
 
   const [postSuccess, setPostSuccess] = useState(false);
 
-  const handleDataSubmit = async (data: TBlogForm) => {
-    const categoryIdsAsString = data.categories.map((category) => category.id);
-    const formattedDate = data.publish_date.toISOString().split("T")[0];
+  const handleDataSubmit = async () => {
+    const categoryIdsAsString = watch().categories.map(
+      (category) => category.id
+    );
+    const formattedDate = watch().publish_date.toISOString().split("T")[0];
 
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("author", data.author);
+    formData.append("title", watch().title);
+    formData.append("author", watch().author);
     formData.append("publish_date", formattedDate);
     formData.append("categories", `[${categoryIdsAsString}]`);
-    formData.append("description", data.description);
-    formData.append("email", data.email);
-    formData.append("image", data.image!);
+    formData.append("description", watch().description);
+    formData.append("email", watch().email);
+    formData.append("image", watch().image!);
 
     try {
       await axios.post(
@@ -221,7 +276,8 @@ export const AddBlog2 = () => {
   const handleRemoveImage = () => {
     setValue("image", null);
     setIsImageUploaded(false);
-    setImageName("");
+    localStorage.removeItem("imageName");
+    trigger();
   };
 
   return (
@@ -236,11 +292,11 @@ export const AddBlog2 = () => {
           >
             <div className="upload-container">
               <label>ატვირთეთ ფოტო</label>
-              {isImageUploaded ? (
+              {isImageUploaded || storedFormData.image ? (
                 <div className="uploaded">
                   <div className="galleryImageName">
                     <img src="assets/svg/gallery.svg" />
-                    <span>{imageName}</span>
+                    <span>{localStorage.getItem("imageName")!}</span>
                   </div>
                   <div className="remove" onClick={handleRemoveImage}>
                     <img src="assets/svg/add.svg" alt="" />
@@ -377,7 +433,7 @@ export const AddBlog2 = () => {
                         // onChange={(date: Date) => field.onChange(date)}
                         onChange={(date: Date) => {
                           setValue("publish_date", date);
-                          trigger();
+                          // trigger();
                         }}
                         className={errors.publish_date ? "error" : ""}
                       />
@@ -393,18 +449,30 @@ export const AddBlog2 = () => {
                     errors.categories ? "error" : ""
                   }`}
                 >
-                  {getValues().categories.length === 0 && (
-                    <span>აირჩიეთ კატეგორია</span>
+                  {getValues().categories === undefined ? (
+                    <div></div>
+                  ) : (
+                    getValues().categories.length === 0 && (
+                      <span>აირჩიეთ კატეგორია</span>
+                    )
                   )}
+
                   <ul className="picked-category-list">
-                    {getValues().categories.map((picked, index) => (
-                      <div key={index} style={getColorStyles(picked.title)}>
-                        <li key={index} className="picked-category-list__item">
-                          {picked.title}
-                        </li>
-                        <img src="assets/svg/close2.svg" alt="close icon" />
-                      </div>
-                    ))}
+                    {getValues().categories === undefined ? (
+                      <div>s</div>
+                    ) : (
+                      getValues().categories.map((picked, index) => (
+                        <div key={index} style={getColorStyles(picked.title)}>
+                          <li
+                            key={index}
+                            className="picked-category-list__item"
+                          >
+                            {picked.title}
+                          </li>
+                          <img src="assets/svg/close2.svg" alt="close icon" />
+                        </div>
+                      ))
+                    )}
                   </ul>
                   <div
                     className="arrow-down"
@@ -467,9 +535,12 @@ export const AddBlog2 = () => {
           </form>
         </div>
       </div>
-      <div className="arrow-container">
-        <img src="assets/svg/arrow-left2.svg" alt="" />
-      </div>
+      <Link to="/">
+        <div className="arrow-container">
+          <img src="assets/svg/arrow-left2.svg" alt="arrow left" />
+        </div>
+      </Link>
+
       {postSuccess && (
         <>
           <Overlay />

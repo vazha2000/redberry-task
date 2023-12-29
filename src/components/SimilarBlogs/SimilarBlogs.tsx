@@ -19,8 +19,9 @@ type TSimilarBlogsProps = {
       background_color: string;
     }
   ];
+  id: string
 };
-export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
+export const SimilarBlogs = ({ categories, id }: TSimilarBlogsProps) => {
   const token =
     "503b1f485c12cc6d3b89177dfc9d0eb81b8d2279dc0c480dedc81a7451657268";
 
@@ -44,13 +45,13 @@ export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  const currentDate = new Date().toISOString().split('T')[0]
   const filteredBlogs = blogData?.data.filter((blog) =>
     blog.categories.some((blogCategory) =>
       categories?.some(
         (selectedCategory) => selectedCategory.title === blogCategory.title
       )
-    )
+    ) && blog.id !== parseInt(id) && blog.publish_date <= currentDate
   );
 
   return (
@@ -59,16 +60,24 @@ export const SimilarBlogs = ({ categories }: TSimilarBlogsProps) => {
         <div className="similarBlogs__headerArrows">
           <h2>მსგავსი სტატიები</h2>
           <div className="arrows">
-            <img className="custom-arrow custom-arrow-left" src="assets/svg/arrow-left.svg" alt="" />
-            <img className="custom-arrow custom-arrow-right" src="assets/svg/arrow-right.svg" alt="" />
+            <img
+              className="custom-arrow custom-arrow-left"
+              src="assets/svg/arrow-left.svg"
+              alt=""
+            />
+            <img
+              className="custom-arrow custom-arrow-right"
+              src="assets/svg/arrow-right.svg"
+              alt=""
+            />
           </div>
         </div>
         <div className="similarBlogs__list">
           <Swiper
             modules={[A11y, Navigation]}
             navigation={{
-              nextEl: '.custom-arrow-right',
-              prevEl: '.custom-arrow-left',
+              nextEl: ".custom-arrow-right",
+              prevEl: ".custom-arrow-left",
             }}
             spaceBetween={72}
             slidesPerView={3}
