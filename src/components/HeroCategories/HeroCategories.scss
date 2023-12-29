@@ -1,12 +1,14 @@
 .heroCategories-wrapper {
-  padding: 0 76px;
+  // padding: 0 76px;
+  padding: 0 101px;
   display: flex;
   justify-content: center;
 
   .heroCategories {
     display: flex;
     overflow-x: scroll;
-    max-width: 684px;
+    // max-width: 684px;
+    max-width: 906px;
     gap: 24px;
     padding: 1px 1px 10px 1px;
 

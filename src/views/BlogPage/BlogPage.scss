@@ -3,13 +3,15 @@
 
 .blogPage-wrapper {
   position: relative;
-  width: 720px;
+  // width: 720px;
+  width: 960px;
   margin: 0 auto;
 
   .blogPage {
     margin-top: 120px;
     &__image {
-      height: 328px;
+      // height: 328px;
+      height: 437px;
 
       img {
         width: 100%;
@@ -83,7 +85,8 @@
   .blogPage-back {
     position: absolute;
     top: 0;
-    left: -324px;
+    // left: -324px;
+    left: -380px;
     display: flex;
     cursor: pointer;
   }

@@ -46,8 +46,6 @@ export const AddBlog2 = () => {
     formState: { errors },
     watch,
     setValue,
-    setError,
-    clearErrors,
     trigger,
     control,
     reset,
@@ -135,7 +133,6 @@ export const AddBlog2 = () => {
     };
   };
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  // const [imageName, setImageName] = useState("");
   const watchedValues = watch();
 
   function dataURLtoBlob(dataURL: string) {
@@ -171,12 +168,9 @@ export const AddBlog2 = () => {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        // setValue("image", selectedFile || storedFormData.image);
         setValue("image", selectedFile);
         setIsImageUploaded(true);
-        // setImageName(selectedFile.name);
         localStorage.setItem("imageName", selectedFile.name);
-        // trigger();
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -191,8 +185,10 @@ export const AddBlog2 = () => {
   const [authorErrors, setAuthorErrors] = useState<boolean[]>([]);
   const [isAuthorFocused, setIsAuthorFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
+  const [isCategoriesFocused, setIsCategoriesFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const [isCalendarFocused, setIsCalendarFocused] = useState(false);
 
   const validateAuthor = (value: string) => {
     const words = value.trim().split(/\s+/);
@@ -278,6 +274,21 @@ export const AddBlog2 = () => {
     setIsImageUploaded(false);
     localStorage.removeItem("imageName");
     trigger();
+  };
+
+  const handleRemoveCategory = (categoryId: number) => {
+    const currentCategories = getValues().categories as {
+      id: number;
+      title: string;
+    }[];
+
+    const updatedCategories = currentCategories.filter(
+      (category) => category.id !== categoryId
+    );
+
+    setValue("categories", updatedCategories);
+    setPickedCategories(updatedCategories);
+    trigger("categories");
   };
 
   return (
@@ -435,7 +446,12 @@ export const AddBlog2 = () => {
                           setValue("publish_date", date);
                           // trigger();
                         }}
-                        className={errors.publish_date ? "error" : ""}
+                        onFocus={() => setIsCalendarFocused(true)}
+                        className={`${errors.publish_date ? "error" : ""} ${
+                          isCalendarFocused &&
+                          watch().publish_date !== null &&
+                          "success"
+                        }`}
                       />
                     )}
                   />
@@ -447,6 +463,8 @@ export const AddBlog2 = () => {
                   id="categoryField"
                   className={`category-list-container ${
                     errors.categories ? "error" : ""
+                  } ${
+                    isCategoriesFocused && !errors.categories ? "success" : ""
                   }`}
                 >
                   {getValues().categories === undefined ? (
@@ -469,7 +487,11 @@ export const AddBlog2 = () => {
                           >
                             {picked.title}
                           </li>
-                          <img src="assets/svg/close2.svg" alt="close icon" />
+                          <img
+                            onClick={() => handleRemoveCategory(picked.id)}
+                            src="assets/svg/close2.svg"
+                            alt="close icon"
+                          />
                         </div>
                       ))
                     )}
@@ -479,9 +501,10 @@ export const AddBlog2 = () => {
                     style={{ display: "flex", cursor: "pointer" }}
                   >
                     <img
-                      onClick={() =>
-                        setIsCategoriesClicked(!isCategoriesClicked)
-                      }
+                      onClick={() => {
+                        setIsCategoriesClicked(!isCategoriesClicked);
+                        setIsCategoriesFocused(true);
+                      }}
                       src="assets/svg/arrow-down.svg"
                       alt="arrow down"
                     />
