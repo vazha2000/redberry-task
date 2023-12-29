@@ -1,11 +1,12 @@
 .heroBlogs-wrapper {
-  padding: 0 76px;
+  // padding: 0 76px;
+  padding: 0 101px;
   margin: 64px 0 66px;
 
   .heroBlogs {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     row-gap: 56px;
+    column-gap: 42px;
   }
 }

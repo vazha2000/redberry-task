@@ -7,8 +7,9 @@
   .addBlog {
     display: flex;
     flex-direction: column;
-    width: 600px;
-    margin: 0 26%;
+    // width: 600px;
+    width: 800px;
+    margin: 0 30%;
     h1 {
       color: $text-primary-color;
       font-size: 32px;
@@ -180,6 +181,7 @@
           }
           &.success {
             border: 1px solid #14d81c;
+            background-color: #f8fff8;
           }
         }
 
@@ -220,7 +222,8 @@
 
             input {
               border: none;
-              width: 288px;
+              // width: 288px;
+              width: 388px;
               height: 90%;
               cursor: pointer;
               padding-left: 48px;
@@ -236,6 +239,11 @@
               &.error {
                 border: 1px solid $text-danger;
                 background: #faf2f3;
+              }
+
+              &.success {
+                border: 1px solid #14d81c;
+                background-color: #f8fff8;
               }
             }
             &__icon {
@@ -269,11 +277,16 @@
             border-radius: 12px;
             border: 1px solid #e4e3eb;
             background: #fcfcfd;
-            max-width: 285px;
+            // max-width: 285px;
+            max-width: 385px;
 
             &.error {
               border: 1px solid red;
               background: #faf2f3;
+            }
+            &.success {
+              border: 1px solid #14d81c;
+              background-color: #f8fff8;
             }
 
             span {
@@ -341,7 +354,8 @@
       .email-container {
         display: flex;
         flex-direction: column;
-        width: 288px;
+        // width: 288px;
+        width: 388px;
 
         .email-error {
           display: flex;
@@ -363,7 +377,8 @@
       }
 
       .submit-button {
-        width: 288px;
+        // width: 288px;
+        width: 388px;
         display: flex;
         align-self: flex-end;
         button {
@@ -378,7 +393,8 @@
 .arrow-container {
   position: absolute;
   top: 120px;
-  left: 76px;
+  // left: 76px;
+  left: 101px;
   display: flex;
   cursor: pointer;
 }
